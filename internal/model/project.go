@@ -7,7 +7,7 @@ type Project struct {
     ReleaseYear int `json:"release_year"`
     CoverImageUrl string `json:"cover_image_url"`
     IsFeatured bool `json:"is_featured"`
-    Type string `json:"type"`
+    Type    string `json:"type" binding:"required,oneof=movie series"`
     Duration int `json:"duration"`
     Keywords string `json:"keywords"`
     Director string `json:"director"`

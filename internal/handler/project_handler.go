@@ -33,7 +33,7 @@ func (h *ProjectHandler) GetByID(c *gin.Context) {
     }
     project, err := h.service.GetByID(id)
     if err != nil {
-        c.JSON(http.StatusNotFound, gin.H{"error": "not found"})
+        c.JSON(http.StatusNotFound, gin.H{"error": "project with id " + c.Param("id") + " not found"})
         return
     }
     c.JSON(http.StatusOK, project)
