@@ -172,83 +172,110 @@ ozinse-backend/
 ## Category
 ```go
 type Category struct {
-    ID   int    // Unique identifier
-    Name string // Category name (must be unique)
+    ID   int    `json:"id"`
+    Name string `json:"name"`  // Must be unique
 }
 ```
+**Database Table:** `category`
 **Purpose:** Represents content categories (e.g., Animation, Comedy, Drama).
+**Constraints:** Name must be unique.
 
 ## Genre
 ```go
 type Genre struct {
-    ID   int    // Unique identifier
-    Name string // Genre name (must be unique)
+    ID      int    `json:"id"`
+    Name    string `json:"name"`           // Must be unique
+    IconUrl string `json:"icon_url"`
 }
 ```
-**Purpose:** Represents content genres (e.g., Action, Adventure, Horror).
+**Database Table:** `genre`
+**Purpose:** Represents content genres (e.g., Action, Adventure, Horror) with visual icon.
+**Constraints:** Name must be unique.
 
 ## Project
 ```go
 type Project struct {
-    ID          int       // Unique identifier
-    Title       string    // Project title (must be unique)
-    Description string    // Project description
-    ReleaseDate time.Time // Release date
-    CreatedAt   time.Time // Creation timestamp
-    UpdatedAt   time.Time // Last update timestamp
+    ID            int                 `json:"id"`
+    Title         string              `json:"title"`           // Project title
+    Description   string              `json:"description"`     // Full description
+    ReleaseYear   int                 `json:"release_year"`    // Year of release
+    CoverImageUrl string              `json:"cover_image_url"` // Poster/cover image
+    IsFeatured    bool                `json:"is_featured"`     // Feature flag
+    Type          string              `json:"type"`            // "movie" or "series"
+    Duration      int                 `json:"duration"`        // Duration in minutes
+    Keywords      string              `json:"keywords"`        // Comma-separated keywords
+    Director      string              `json:"director"`        // Director name
+    Producer      string              `json:"producer"`        // Producer name
+    Seasons       []Season            `json:"seasons,omitempty"`
+    Genres        []Genre             `json:"genres,omitempty"`
+    AgeCategories []Age_Category      `json:"age_categories,omitempty"`
+    Categories    []Category          `json:"categories,omitempty"`
+    Screenshots   []ProjectScreenshot `json:"screenshots,omitempty"`
 }
 ```
-**Purpose:** Represents multimedia projects (TV shows, movies, documentaries).
-**Associations:** Can be linked to multiple Genres, AgeCategories, and Categories.
+**Database Table:** `project`
+**Purpose:** Represents multimedia projects (movies or TV series).
+**Constraints:** Type must be either "movie" or "series".
+**Associations:** Can be linked to multiple Genres, AgeCategories, Categories, and Screenshots.
 
 ## Season
 ```go
 type Season struct {
-    ID        int       // Unique identifier
-    ProjectID int       // Foreign key to Project
-    Number    int       // Season number
-    Title     string    // Season title
-    CreatedAt time.Time // Creation timestamp
+    ID           int       `json:"id"`
+    ProjectID    int       `json:"project_id"`      // Foreign key to Project
+    SeasonNumber int       `json:"season_number"`   // Season number
+    Episodes     []Episode `json:"episodes,omitempty"`
 }
 ```
-**Purpose:** Represents seasons within a project.
+**Database Table:** `season`
+**Purpose:** Represents seasons within a series project.
+**Constraints:** Unique combination of (ProjectID, SeasonNumber).
+**Relations:** One-to-Many with Episodes.
 
 ## Episode
 ```go
 type Episode struct {
-    ID        int       // Unique identifier
-    SeasonID  int       // Foreign key to Season
-    Number    int       // Episode number
-    Title     string    // Episode title
-    Duration  int       // Duration in minutes
-    CreatedAt time.Time // Creation timestamp
+    ID             int    `json:"id"`
+    SeasonID       int    `json:"season_id"`         // Foreign key to Season
+    EpisodeNumber  int    `json:"episode_number"`    // Episode number within season
+    YoutubeVideoID string `json:"youtube_video_id"` // YouTube video identifier
+    Duration       int    `json:"duration"`         // Duration in seconds
 }
 ```
-**Purpose:** Represents episodes within a season.
+**Database Table:** `episode`
+**Purpose:** Represents individual episodes within a season.
+**Constraints:** Unique combination of (SeasonID, EpisodeNumber).
+**Relations:** Many-to-One with Season.
 
-## AgeCategory
+## Age_Category
 ```go
-type AgeCategory struct {
-    ID   int    // Unique identifier
-    Name string // Age category name (e.g., "10-12", "12-14")
+type Age_Category struct {
+    ID      int    `json:"id"`
+    Range   string `json:"range"`        // Age range (e.g., "10-12", "13-17")
+    IconUrl string `json:"icon_url"`
 }
 ```
-**Purpose:** Represents age restrictions for content.
+**Database Table:** `age_category`
+**Purpose:** Represents age rating categories for content classification.
+**Constraints:** Range must be unique.
 
 ## Screenshot & ProjectScreenshot
 ```go
 type Screenshot struct {
-    ID   int    // Unique identifier
-    URL  string // Screenshot image URL
+    ID         int    `json:"id"`
+    ProjectID  int    `json:"project_id"`    // Foreign key to Project
+    URLToImage string `json:"url_to_image"`  // Screenshot image URL
 }
 
 type ProjectScreenshot struct {
-    ID           int // Unique identifier
-    ProjectID    int // Foreign key to Project
-    ScreenshotID int // Foreign key to Screenshot
+    ID         int    `json:"id"`
+    ProjectID  int    `json:"project_id"`    // Foreign key to Project
+    URLToImage string `json:"url_to_image"`  // Screenshot image URL
 }
 ```
-**Purpose:** Manages media assets associated with projects.
+**Database Table:** `project_screenshot`
+**Purpose:** Manages screenshot images associated with projects. Stores both project reference and direct image URL.
+**Relations:** Many-to-One with Project.
 
 ---
 
@@ -257,21 +284,32 @@ type ProjectScreenshot struct {
 The application uses PostgreSQL as the primary data store. Key tables include:
 
 ## Tables Structure
-- **categories** - Stores category data (ID, Name)
-- **genres** - Stores genre information (ID, Name)
-- **projects** - Stores project details (ID, Title, Description, ReleaseDate, timestamps)
-- **seasons** - Stores season information (ID, ProjectID, Number, Title, timestamps)
-- **episodes** - Stores episode information (ID, SeasonID, Number, Title, Duration, timestamps)
-- **age_categories** - Stores age restriction data (ID, Name)
-- **screenshots** - Stores screenshot URLs (ID, URL)
-- **project_genres** - Junction table linking Projects to Genres
-- **project_categories** - Junction table linking Projects to Categories
-- **project_age_categories** - Junction table linking Projects to AgeCategories
-- **project_screenshots** - Junction table linking Projects to Screenshots
 
-**Migration Location:** `/migrations/000001_init_schema.up.sql`
+### Core Tables
+- **category** - `(id, name)` - Stores content categories. Name must be unique.
+- **genre** - `(id, name, icon_url)` - Stores genres with icons. Name must be unique.
+- **age_category** - `(id, range, icon_url)` - Stores age ratings. Range must be unique.
 
-For detailed schema, see the migration file.
+### Project & Content
+- **project** - `(id, title, description, release_year, cover_image_url, is_featured, type, duration, keywords, director, producer)` - Main project table. Type is ENUM: 'movie' or 'series'.
+- **season** - `(id, project_id, season_number)` - Seasons within projects. Constraint: Unique(project_id, season_number).
+- **episode** - `(id, season_id, episode_number, youtube_video_id, duration)` - Episodes within seasons. Constraint: Unique(season_id, episode_number).
+
+### Media & Relations
+- **project_screenshot** - `(id, project_id, url_to_image)` - Screenshots linked to projects.
+
+### Junction Tables (Many-to-Many)
+- **project_genre** - Joins Projects to Genres with cascade delete.
+- **project_category** - Joins Projects to Categories with cascade delete.
+- **project_age_category** - Joins Projects to AgeCategories with cascade delete.
+
+### Additional Tables
+- **users** - User authentication and profiles (email, password, full_name, phone, birth_date, role_id, created_at, image).
+- **role** - User roles with permissions stored as JSON.
+
+**Migration Location:** [migrations/000001_init_schema.up.sql](migrations/000001_init_schema.up.sql)
+
+For detailed schema including foreign keys and constraints, see the migration file.
 
 ---
 
