@@ -1,76 +1,142 @@
 package handler
 
 import (
-    "net/http"
-    "strconv"
-    "ozinse-backend/internal/model"
-    "ozinse-backend/internal/service"
-    "github.com/gin-gonic/gin"
+	"net/http"
+	"ozinse-backend/internal/model"
+	"ozinse-backend/internal/service"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
+type CreateProjectDTO struct {
+	model.Project
+	GenreIDs       []int `json:"genre_ids"`
+	AgeCategoryIDs []int `json:"age_category_ids"`
+	CategoryIDs    []int `json:"category_ids"`
+}
+
 type ProjectHandler struct {
-    service *service.ProjectService
+	service *service.ProjectService
 }
 
 func NewProjectHandler(service *service.ProjectService) *ProjectHandler {
-    return &ProjectHandler{service: service}
+	return &ProjectHandler{service: service}
 }
 
+// GetAll projects
+// @Summary List projects
+// @Description Returns all projects
+// @Tags categories
+// @Accept json
+// @Produce json
+// @Success 200 {array} model.Project
+// @Failure 500 {object} gin.H
+// @Router /api/projects [get]
 func (h *ProjectHandler) GetAll(c *gin.Context) {
-    projects, err := h.service.GetAll()
-    if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
-    c.JSON(http.StatusOK, projects)
+	projects, err := h.service.GetAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, projects)
 }
 
+// GetByID project by ID
+// @Summary Get project by ID
+// @Description Returns a project by its ID
+// @Tags categories
+// @Accept json
+// @Produce json
+// @Param id path int true "Project ID"
+// @Success 200 {object} model.Project
+// @Failure 400 {object} gin.H
+// @Failure 404 {object} gin.H
+// @Router /api/projects/{id} [get]
 func (h *ProjectHandler) GetByID(c *gin.Context) {
-    id, err := strconv.Atoi(c.Param("id"))
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
-        return
-    }
-    project, err := h.service.GetByID(id)
-    if err != nil {
-        c.JSON(http.StatusNotFound, gin.H{"error": "project with id " + c.Param("id") + " not found"})
-        return
-    }
-    c.JSON(http.StatusOK, project)
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+	project, err := h.service.GetByID(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "project with id " + c.Param("id") + " not found"})
+		return
+	}
+	c.JSON(http.StatusOK, project)
 }
 
+// Create project
+// @Summary Create project
+// @Description Creates a new project
+// @Tags categories
+// @Accept json
+// @Produce json
+// @Param project body CreateProjectDTO true "Project payload"
+// @Success 201 {object} model.Project
+// @Failure 400 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /api/projects [post]
 func (h *ProjectHandler) Create(c *gin.Context) {
-    var project model.Project
-    if err := c.ShouldBindJSON(&project); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
-    if err := h.service.Create(&project); err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
-    c.JSON(http.StatusCreated, project)
+	var req CreateProjectDTO
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := h.service.Create(&req.Project, req.GenreIDs, req.AgeCategoryIDs, req.CategoryIDs)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create project"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, req.Project)
 }
 
+// Update project
+// @Summary Update project
+// @Description Updates an existing project by ID
+// @Tags categories
+// @Accept json
+// @Produce json
+// @Param id path int true "Project ID"
+// @Param project body model.Project true "Project payload"
+// @Success 200 {object} model.Project
+// @Failure 400 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /api/projects/{id} [put]
 func (h *ProjectHandler) Update(c *gin.Context) {
-    id, err := strconv.Atoi(c.Param("id"))
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
-        return
-    }
-    var project model.Project
-    if err := c.ShouldBindJSON(&project); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
-    project.ID = id
-    if err := h.service.Update(&project); err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
-    c.JSON(http.StatusOK, project)
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+	var project model.Project
+	if err := c.ShouldBindJSON(&project); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	project.ID = id
+	if err := h.service.Update(&project); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, project)
 }
 
+// Delete project
+// @Summary Delete project
+// @Description Deletes a project by ID
+// @Tags categories
+// @Accept json
+// @Produce json
+// @Param id path int true "Project ID"
+// @Success 200 {object} gin.H
+// @Failure 400 {object} gin.H
+// @Failure 404 {object} gin.H
+// @Router /api/projects/{id} [delete]
 func (h *ProjectHandler) Delete(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -79,53 +145,9 @@ func (h *ProjectHandler) Delete(c *gin.Context) {
 	}
 
 	if err := h.service.Delete(id); err != nil {
-		// Here we are returning a custom error message
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "successfully deleted"})
 }
-
-/*
-
-Core Purpose
-The Handler's main job is to translate between the world of HTTP (web browsers, Postman, mobile apps) and the world of Go (structs, methods, and logic). It ensures that the rest of your application (the Service and Repository) doesn't have to deal with web-specific details like headers, cookies, or JSON parsing.
-
-Key Responsibilities
-Routing: It listens for specific "paths" and "methods." For example, it tells the app: "When you see a DELETE request at /api/categories/5, execute the Delete function."
-
-Request Unmarshalling (Binding): It takes the raw JSON text you send in Postman and converts it into a Go Model. It uses the ShouldBindJSON method in Gin to do this.
-
-Parameter Extraction: it pulls information out of the URL. In /api/categories/:id, the Handler is responsible for grabbing the :id and converting it from a string to an integer so the code can use it.
-
-Input Validation: It performs "shallow" validation. It checks if the ID is a number or if the required JSON fields are present. If something is wrong, it stops the request immediately before it ever reaches the database.
-
-Response Marshalling: After the Service and Repository finish their work, the Handler takes the Go result and converts it back into JSON to send to the user.
-
-Status Code Assignment: The Handler decides the "tone" of the response by setting HTTP status codes:
-
-200 OK: "Everything went great."
-
-201 Created: "I successfully made the new category."
-
-400 Bad Request: "You sent me the wrong data format."
-
-404 Not Found: "That ID doesn't exist."
-
-500 Internal Server Error: "Something crashed on my end."
-
-NB--------------------------------------------------------
-
-Imagine a user sending a POST request to create a category:
-
-The Handler receives the raw JSON. It uses the Model as a template to turn that JSON into a Go object.
-
-The Handler passes that Model object to the Service.
-
-The Service performs logic and passes the Model to the Repository.
-
-The Repository saves the data from the Model into the database.
-
-Finally, the Handler takes the updated Model (now with an ID) and sends it back to the user.
-*/

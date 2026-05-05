@@ -1,22 +1,9 @@
 package model
 
+// ProjectScreenshot represents a screenshot image related to a project.
+// swagger:model ProjectScreenshot
 type ProjectScreenshot struct {
-	ID         int    `json:"id"`
-	ProjectID  int    `json:"project_id"`
-	URLToImage string `json:"url_to_image"`
+	ID         int    `json:"id" example:"1"`
+	ProjectID  int    `json:"project_id" example:"42"`
+	URLToImage string `json:"url_to_image" example:"https://example.com/screenshot.png"`
 }
-
-/*
-
-The Model is the simplest but most essential layer. It defines exactly what your data looks like as it travels through the Handlers, Services, and Repositories.
-
-Responsibilities:
-Data Structure: It defines the properties of an entity (e.g., a Category has an ID and a Name).
-
-Tagging: It uses "tags" (like `json:"name"`) to tell Go how to rename or format fields when converting them to JSON for the client.
-
-Consistency: By using the same Model across all layers, you ensure that the "Chef" (Service) and the "Supplier" (Repository) are always talking about the same "Menu Item."
-
-Why it's important: It serves as the "single source of truth." If you add a new field to your database (like description), you update the Model once, and every other layer immediately knows how to handle that new data.
-
-*/

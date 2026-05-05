@@ -6,14 +6,17 @@ import (
 	"ozinse-backend/internal/model"
 )
 
+// CategoryRepository provides CRUD access to the category table.
 type CategoryRepository struct {
 	db *sql.DB
 }
 
+// NewCategoryRepository creates a new CategoryRepository instance.
 func NewCategoryRepository(db *sql.DB) *CategoryRepository {
 	return &CategoryRepository{db: db}
 }
 
+// GetAll retrieves all categories from the database.
 func (r *CategoryRepository) GetAll() ([]model.Category, error) {
 	rows, err := r.db.Query(`SELECT id, name FROM category`)
 	if err != nil {
@@ -32,6 +35,7 @@ func (r *CategoryRepository) GetAll() ([]model.Category, error) {
 	return categories, nil
 }
 
+// GetByID retrieves a category by its unique ID.
 func (r *CategoryRepository) GetByID(id int) (*model.Category, error) {
 	var c model.Category
 	err := r.db.QueryRow(`SELECT id, name FROM category WHERE id = $1`, id).
@@ -42,6 +46,7 @@ func (r *CategoryRepository) GetByID(id int) (*model.Category, error) {
 	return &c, nil
 }
 
+// Create inserts a new category and returns the generated ID.
 func (r *CategoryRepository) Create(c *model.Category) error {
 	return r.db.QueryRow(
 		`INSERT INTO category (name) VALUES ($1) RETURNING id`,
@@ -49,6 +54,7 @@ func (r *CategoryRepository) Create(c *model.Category) error {
 	).Scan(&c.ID)
 }
 
+// Update modifies an existing category by ID. Returns an error if no rows were affected.
 func (r *CategoryRepository) Update(c *model.Category) error {
 	// We use Exec to update the category
 	result, err := r.db.Exec(
@@ -73,6 +79,7 @@ func (r *CategoryRepository) Update(c *model.Category) error {
 	return nil
 }
 
+// Delete removes a category from the database by ID.
 func (r *CategoryRepository) Delete(id int) error {
 	result, err := r.db.Exec(`DELETE FROM category WHERE id = $1`, id)
 	if err != nil {
@@ -90,6 +97,7 @@ func (r *CategoryRepository) Delete(id int) error {
 	return nil
 }
 
+// ExistsByName checks whether a category with the provided name already exists.
 func (r *CategoryRepository) ExistsByName(name string) (bool, error) {
 	var exists bool
 	query := `SELECT EXISTS(SELECT 1 FROM category WHERE name = $1)`
@@ -99,9 +107,3 @@ func (r *CategoryRepository) ExistsByName(name string) (bool, error) {
 	}
 	return exists, nil
 }
-
-/* The Repository acts as a bridge between your application's business logic and the data source (database). It is a design pattern that isolates data access logic. Instead of your code knowing exactly how to write SQL queries, it simply asks the repository for an object (e.g., "Give me Category with ID 5"). The repository handles the technical execution with the database and returns a clean Model.
-
-Repository (The Supplier): The only layer allowed to communicate with the database (PostgreSQL) using raw SQL queries.
-
-*/
