@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 	"ozinse-backend/internal/handler"
+	"ozinse-backend/internal/middleware"
 	"ozinse-backend/internal/repository"
 	"ozinse-backend/internal/service"
-
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -40,10 +40,22 @@ func main() {
 	genreRepo := repository.NewGenreRepository(db)
 	genreService := service.NewGenreService(genreRepo)
 	genreHandler := handler.NewGenreHandler(genreService)
-	
-	projectRepo:= repository.NewProjectRepository(db)
+
+	projectRepo := repository.NewProjectRepository(db)
 	projectService := service.NewProjectService(projectRepo)
 	projectHandler := handler.NewProjectHandler(projectService)
+
+	// --- NEW: Auth & User Dependencies ---
+	// Fetch the secret key from .env, or use a fallback for local development
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		jwtSecret = "my-super-secret-key"
+	}
+
+	userRepo := repository.NewUserRepository(db)
+	userService := service.NewUserService(userRepo)
+	// Pass the service, the secret key, and the token expiration time (e.g., 24 hours)
+	authHandler := handler.NewAuthHandler(userService, jwtSecret, 24)
 
 	// 5. Setup a Gin router
 	r := gin.Default()
@@ -53,7 +65,7 @@ func main() {
 		c.String(200, "Welcome to Ozinse API!")
 	})
 
-	// Health check 
+	// Health check
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status":   "online",
@@ -66,31 +78,38 @@ func main() {
 	// 6. Define routes
 	api := r.Group("/api")
 	{
-		categories := api.Group("/categories")
-		{
-			categories.GET("", categoryHandler.GetAll)
-			categories.GET("/:id", categoryHandler.GetByID)
-			categories.POST("", categoryHandler.Create)
-			categories.PUT("/:id", categoryHandler.Update)
-			categories.DELETE("/:id", categoryHandler.Delete)
-		}
+		// 6.1 Public Routes (No token required)
+		api.POST("/auth/login", authHandler.Login) // The counter where users get their token
 
-		genres := api.Group("/genres")
-		{
-			genres.GET("", genreHandler.GetAll)
-			genres.GET("/:id", genreHandler.GetByID)
-			genres.POST("", genreHandler.Create)
-			genres.PUT("/:id", genreHandler.Update)
-			genres.DELETE("/:id", genreHandler.Delete)
-		}
+		// Anyone can view data
+		api.GET("/categories", categoryHandler.GetAll)
+		api.GET("/categories/:id", categoryHandler.GetByID)
+		api.GET("/genres", genreHandler.GetAll)
+		api.GET("/genres/:id", genreHandler.GetByID)
+		api.GET("/projects", projectHandler.GetAll)
+		api.GET("/projects/:id", projectHandler.GetByID)
 
-		projects := api.Group("/projects")
+		// 6.2 Protected Routes (Require a valid JWT token)
+		protected := api.Group("/")
+		protected.Use(middleware.AuthMiddleware(jwtSecret))
 		{
-			projects.GET("", projectHandler.GetAll)
-			projects.GET("/:id", projectHandler.GetByID)
-			projects.POST("", projectHandler.Create)
-			projects.PUT("/:id", projectHandler.Update)
-			projects.DELETE("/:id", projectHandler.Delete)
+	
+			adminOnly := protected.Group("/")
+			adminOnly.Use(middleware.AdminOnly())
+			{
+				// only users with role_id = 2 (admin) can access these routes
+				adminOnly.POST("/categories", categoryHandler.Create)
+				adminOnly.PUT("/categories/:id", categoryHandler.Update)
+				adminOnly.DELETE("/categories/:id", categoryHandler.Delete)
+
+				adminOnly.POST("/genres", genreHandler.Create)
+				adminOnly.PUT("/genres/:id", genreHandler.Update)
+				adminOnly.DELETE("/genres/:id", genreHandler.Delete)
+
+				adminOnly.POST("/projects", projectHandler.Create)
+				adminOnly.PUT("/projects/:id", projectHandler.Update)
+				adminOnly.DELETE("/projects/:id", projectHandler.Delete)
+			}
 		}
 	}
 

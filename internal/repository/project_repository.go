@@ -69,7 +69,7 @@ func (r *ProjectRepository) GetAll() ([]model.Project, error) {
 				FROM project_screenshot s
 				WHERE s.project_id = p.id
 			), '[]') AS screenshots
-
+			
 		FROM project p
 	`
 
