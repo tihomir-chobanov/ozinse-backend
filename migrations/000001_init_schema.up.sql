@@ -30,7 +30,7 @@ CREATE TABLE project (
     "description" TEXT NOT NULL,
     "release_year" INTEGER NOT NULL,
     "cover_image_url" VARCHAR(255) NOT NULL,
-    "is_featured" BOOLEAN NOT NULL, 
+    "is_favorite" BOOLEAN NOT NULL, 
     "type" project_type NOT NULL,
     "duration" INT NOT NULL,
     "keywords" VARCHAR(255) NOT NULL,

@@ -16,9 +16,22 @@ func NewProjectService(repo *repository.ProjectRepository) *ProjectService {
 	return &ProjectService{repo: repo}
 }
 
-// GetAll retrieves all projects from the repository.
-func (s *ProjectService) GetAll() ([]model.Project, error) {
-	return s.repo.GetAll()
+// GetAll retrieves a paginated list of projects along with the total count of records.
+// It calculates the database offset based on the requested page and limit parameters.
+func (s *ProjectService) GetAll(page int, limit int) ([]model.Project, int, error) {
+	// Sanitize inputs to prevent negative or zero values
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 {
+		limit = 10
+	}
+	// Calculate how many records PostgreSQL needs to skip
+	// Example: Page 2 with Limit 10 -> Offset = (2 - 1) * 10 = 10 (skips first 10 records)
+	offset := (page - 1) * limit
+
+	// Call the repository layer with calculated pagination parameters
+	return s.repo.GetAll(limit, offset)
 }
 
 // GetByID retrieves a project by its ID.

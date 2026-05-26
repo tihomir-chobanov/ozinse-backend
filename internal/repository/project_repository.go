@@ -17,66 +17,95 @@ func NewProjectRepository(db *sql.DB) *ProjectRepository {
 	return &ProjectRepository{db: db}
 }
 
-// GetAll retrieves all projects from the database along with their associated
-// genres, categories, and screenshots in a single, highly optimized query.
-//
+// GetAll retrieves a paginated list of projects from the database along with their associated
+// genres, categories, screenshots, seasons, and episodes in a single, highly optimized query.
+// It also returns the total number of projects in the database to allow the frontend to calculate pages.
 // WHY THIS APPROACH WAS CHOSEN (Architecture note):
-// We are using PostgreSQL's native JSON aggregation functions (json_agg) instead of
-// making separate database calls for each project's relations. Fetching the parent
-// records and then looping through them to fetch child records creates the dreaded
-// "N+1 query problem", which severely degrades performance as the dataset grows.
-// By shifting the aggregation logic to the database layer, we reduce network overhead
-// and fetch everything in exactly 1 query, ensuring the API remains fast and scalable.
-func (r *ProjectRepository) GetAll() ([]model.Project, error) {
+// We combine standard pagination (LIMIT/OFFSET) with native PostgreSQL JSON aggregation functions.
+// To provide proper pagination metadata (e.g., total pages), we first execute a lightweight COUNT query,
+// followed by the main data retrieval query. This prevents loading the entire database into memory.
+func (r *ProjectRepository) GetAll(limit int, offset int) ([]model.Project, int, error) {
 
-	// Define the SQL query.
+	// 1. Fetch the total count of projects for pagination metadata
+	var totalCount int
+	countQuery := `SELECT COUNT(*) FROM project`
+	err := r.db.QueryRow(countQuery).Scan(&totalCount)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// 2. Define the main query with native JSON aggregation, ordering, and pagination limits
 	// COALESCE is used to return an empty JSON array '[]' instead of NULL
 	// if a project has no associated records in the many-to-many tables.
 	// json_build_object creates a JSON object (key-value pairs) for each row.
 	// json_agg collects all these objects into a single JSON array.
 	query := `
 		SELECT 
-			p.id, p.title, p.description, p.release_year, p.cover_image_url, 
-			p.is_featured, p.type, p.duration, p.keywords, p.director, p.producer,
-			
-			-- Aggregate genres into a JSON array
-			COALESCE((
-				SELECT json_agg(json_build_object('id', g.id, 'name', g.name, 'icon_url', g.icon_url))
-				FROM genre g
-				JOIN project_genre pg ON g.id = pg.genre_id
-				WHERE pg.project_id = p.id
-			), '[]') AS genres,
+            p.id, p.title, p.description, p.release_year, p.cover_image_url, 
+            p.is_featured, p.type, p.duration, p.keywords, p.director, p.producer,
+            
+            -- Aggregate genres
+            COALESCE((
+                SELECT json_agg(json_build_object('id', g.id, 'name', g.name, 'icon_url', g.icon_url))
+                FROM genre g
+                JOIN project_genre pg ON g.id = pg.genre_id
+                WHERE pg.project_id = p.id
+            ), '[]') AS genres,
 
-						-- Aggregate age_categories into a JSON array
-			COALESCE((
-				SELECT json_agg(json_build_object('id', ac.id, 'range', ac.range, 'icon_url', ac.icon_url))
-				FROM age_category ac
-				JOIN project_age_category pac ON ac.id = pac.age_category_id
-				WHERE pac.project_id = p.id
-			), '[]') AS age_categories,
+            -- Aggregate age_categories
+            COALESCE((
+                SELECT json_agg(json_build_object('id', ac.id, 'range', ac.range, 'icon_url', ac.icon_url))
+                FROM age_category ac
+                JOIN project_age_category pac ON ac.id = pac.age_category_id
+                WHERE pac.project_id = p.id
+            ), '[]') AS age_categories,
 
-			-- Aggregate categories into a JSON array
-			COALESCE((
-				SELECT json_agg(json_build_object('id', c.id, 'name', c.name))
-				FROM category c
-				JOIN project_category pc ON c.id = pc.category_id
-				WHERE pc.project_id = p.id
-			), '[]') AS categories,
+            -- Aggregate categories
+            COALESCE((
+                SELECT json_agg(json_build_object('id', c.id, 'name', c.name))
+                FROM category c
+                JOIN project_category pc ON c.id = pc.category_id
+                WHERE pc.project_id = p.id
+            ), '[]') AS categories,
 
-			-- Aggregate screenshots into a JSON array
-			COALESCE((
-				SELECT json_agg(json_build_object('id', s.id, 'project_id', s.project_id, 'url_to_image', s.url_to_image))
-				FROM project_screenshot s
-				WHERE s.project_id = p.id
-			), '[]') AS screenshots
-			
-		FROM project p
-	`
+            -- Aggregate screenshots
+            COALESCE((
+                SELECT json_agg(json_build_object('id', s.id, 'project_id', s.project_id, 'url_to_image', s.url_to_image))
+                FROM project_screenshot s
+                WHERE s.project_id = p.id
+            ), '[]') AS screenshots, 
+
+            -- Aggregate seasons and episodes
+            COALESCE((
+                SELECT json_agg(json_build_object(
+                        'id', s.id,
+						'project_id', s.project_id,
+                        'season_number', s.season_number,
+                        'episodes', COALESCE((
+                        SELECT json_agg(json_build_object(
+                            'id', e.id,
+							'season_id', e.season_id,
+                            'episode_number', e.episode_number,
+                            'youtube_video_id', e.youtube_video_id,
+                            'duration', e.duration
+                        ))
+                    FROM episode e
+                    WHERE e.season_id = s.id
+                     ), '[]')
+                 ))
+                FROM season s
+                WHERE s.project_id = p.id
+                ), '[]') AS seasons
+            
+        FROM project p
+		ORDER BY p.id DESC -- Order by ID descending to show the newest projects first
+		LIMIT $1 OFFSET $2 -- Apply pagination constraints ($1 = limit, $2 = offset)
+    `
 
 	// Execute the query
-	rows, err := r.db.Query(query)
+	rows, err := r.db.Query(query, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close() // Ensure the database connection is released back to the pool
 
@@ -87,16 +116,16 @@ func (r *ProjectRepository) GetAll() ([]model.Project, error) {
 		var p model.Project
 
 		// Temporary byte slices to hold the raw JSON data returned by PostgreSQL
-		var genresJSON, ageCategoriesJSON, categoriesJSON, screenshotsJSON []byte
+		var genresJSON, ageCategoriesJSON, categoriesJSON, screenshotsJSON, seasonsJSON []byte
 
 		// Scan the row columns into the respective struct fields and byte slices
 		err := rows.Scan(
 			&p.ID, &p.Title, &p.Description, &p.ReleaseYear, &p.CoverImageUrl,
 			&p.IsFeatured, &p.Type, &p.Duration, &p.Keywords, &p.Director, &p.Producer,
-			&genresJSON, &ageCategoriesJSON, &categoriesJSON, &screenshotsJSON,
+			&genresJSON, &ageCategoriesJSON, &categoriesJSON, &screenshotsJSON, &seasonsJSON,
 		)
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 
 		// Decode (unmarshal) the raw JSON arrays directly into Go slices.
@@ -106,45 +135,53 @@ func (r *ProjectRepository) GetAll() ([]model.Project, error) {
 		json.Unmarshal(ageCategoriesJSON, &p.AgeCategories)
 		json.Unmarshal(categoriesJSON, &p.Categories)
 		json.Unmarshal(screenshotsJSON, &p.Screenshots)
+		json.Unmarshal(seasonsJSON, &p.Seasons)
 
 		// Add the fully populated project to our final slice
 		projects = append(projects, p)
 	}
 
-	return projects, nil
+	return projects, totalCount, nil
 }
 
 // GetByID retrieves a project by its ID, including its screenshots.
 func (r *ProjectRepository) GetByID(id int) (*model.Project, error) {
 	var p model.Project
 
-	// 1. Fetch the main project data
-	query := `SELECT id, title, description, release_year, cover_image_url, is_featured, type, duration, keywords, director, producer 
-              FROM project WHERE id = $1`
+	query := `
+        SELECT 
+            p.id, p.title, p.description, p.release_year, p.cover_image_url, 
+            p.is_featured, p.type, p.duration, p.keywords, p.director, p.producer,
+            
+            COALESCE((SELECT json_agg(json_build_object('id', g.id, 'name', g.name, 'icon_url', g.icon_url)) FROM genre g JOIN project_genre pg ON g.id = pg.genre_id WHERE pg.project_id = p.id), '[]'),
+            COALESCE((SELECT json_agg(json_build_object('id', ac.id, 'range', ac.range, 'icon_url', ac.icon_url)) FROM age_category ac JOIN project_age_category pac ON ac.id = pac.age_category_id WHERE pac.project_id = p.id), '[]'),
+            COALESCE((SELECT json_agg(json_build_object('id', c.id, 'name', c.name)) FROM category c JOIN project_category pc ON c.id = pc.category_id WHERE pc.project_id = p.id), '[]'),
+            COALESCE((SELECT json_agg(json_build_object('id', s.id, 'project_id', s.project_id, 'url_to_image', s.url_to_image)) FROM project_screenshot s WHERE s.project_id = p.id), '[]'),
+            COALESCE((
+                SELECT json_agg(json_build_object(
+                    'id', s.id, 'season_number', s.season_number,
+                    'episodes', COALESCE((SELECT json_agg(json_build_object('id', e.id, 'episode_number', e.episode_number, 'youtube_video_id', e.youtube_video_id, 'duration', e.duration)) FROM episode e WHERE e.season_id = s.id), '[]')
+                )) FROM season s WHERE s.project_id = p.id
+            ), '[]')
+        FROM project p
+        WHERE p.id = $1`
+
+	var genresJSON, ageCategoriesJSON, categoriesJSON, screenshotsJSON, seasonsJSON []byte
 
 	err := r.db.QueryRow(query, id).Scan(
 		&p.ID, &p.Title, &p.Description, &p.ReleaseYear, &p.CoverImageUrl,
 		&p.IsFeatured, &p.Type, &p.Duration, &p.Keywords, &p.Director, &p.Producer,
+		&genresJSON, &ageCategoriesJSON, &categoriesJSON, &screenshotsJSON, &seasonsJSON,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	// 2. Fetch screenshots for this specific project
-	rows, err := r.db.Query(`SELECT id, project_id, url_to_image FROM project_screenshot WHERE project_id = $1`, id)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	// 3. Iterate and add them to the project struct
-	for rows.Next() {
-		var img model.ProjectScreenshot
-		if err := rows.Scan(&img.ID, &img.ProjectID, &img.URLToImage); err != nil {
-			return nil, err
-		}
-		p.Screenshots = append(p.Screenshots, img)
-	}
+	json.Unmarshal(genresJSON, &p.Genres)
+	json.Unmarshal(ageCategoriesJSON, &p.AgeCategories)
+	json.Unmarshal(categoriesJSON, &p.Categories)
+	json.Unmarshal(screenshotsJSON, &p.Screenshots)
+	json.Unmarshal(seasonsJSON, &p.Seasons)
 
 	return &p, nil
 }
@@ -309,5 +346,3 @@ func (r *ProjectRepository) ExistsByName(name string) (bool, error) {
 	}
 	return exists, err
 }
-
-

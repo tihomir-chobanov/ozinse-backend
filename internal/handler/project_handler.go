@@ -5,7 +5,7 @@ import (
 	"ozinse-backend/internal/model"
 	"ozinse-backend/internal/service"
 	"strconv"
-
+	"math"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,22 +24,47 @@ func NewProjectHandler(service *service.ProjectService) *ProjectHandler {
 	return &ProjectHandler{service: service}
 }
 
-// GetAll projects
-// @Summary List projects
-// @Description Returns all projects
-// @Tags categories
+// GetAll projects with pagination
+// @Summary List projects with pagination
+// @Description Returns a paginated list of projects along with metadata
+// @Tags projects
 // @Accept json
 // @Produce json
-// @Success 200 {array} model.Project
+// @Param page query int false "Page number (default: 1)"
+// @Param limit query int false "Number of items per page (default: 10)"
+// @Success 200 {object} gin.H "Includes 'data' array and 'pagination' object"
 // @Failure 500 {object} gin.H
 // @Router /api/projects [get]
 func (h *ProjectHandler) GetAll(c *gin.Context) {
-	projects, err := h.service.GetAll()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, projects)
+	// 1. Get query parameters from the URL, providing string defaults
+    pageStr := c.DefaultQuery("page", "1")
+    limitStr := c.DefaultQuery("limit", "10")
+
+    // 2. Convert the string parameters to integers
+    page, _ := strconv.Atoi(pageStr)
+    limit, _ := strconv.Atoi(limitStr)
+
+    // 3. Call the service layer with the pagination parameters
+    projects, totalCount, err := h.service.GetAll(page, limit)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    // 4. Calculate the total number of pages using ceiling division
+    // Example: 25 total projects / 10 per page = 2.5 -> Ceil makes it 3 pages
+    totalPages := int(math.Ceil(float64(totalCount) / float64(limit)))
+
+    // 5. Return a structured JSON response containing the data and metadata
+    c.JSON(http.StatusOK, gin.H{
+        "data": projects,
+        "pagination": gin.H{
+            "current_page":   page,
+            "per_page":       limit,
+            "total_projects": totalCount,
+            "total_pages":    totalPages,
+        },
+    })
 }
 
 // GetByID project by ID

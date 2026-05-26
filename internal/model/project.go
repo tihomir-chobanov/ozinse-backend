@@ -14,11 +14,12 @@ type Project struct {
 	Keywords      string              `json:"keywords" example:"action,thriller"`
 	Director      string              `json:"director" example:"Jane Doe"`
 	Producer      string              `json:"producer" example:"John Smith"`
-	Seasons       []Season            `json:"seasons,omitempty"`
 	Genres        []Genre             `json:"genres,omitempty"`
 	AgeCategories []Age_Category      `json:"age_categories,omitempty"`
 	Categories    []Category          `json:"categories,omitempty"`
 	Screenshots   []ProjectScreenshot `json:"screenshots,omitempty"`
+	Seasons       []Season            `json:"seasons,omitempty"`
+	Episodes      []Episode           `json:"episodes,omitempty"`
 }
 
 const (
