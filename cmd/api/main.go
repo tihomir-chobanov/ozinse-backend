@@ -7,6 +7,7 @@ import (
 	"ozinse-backend/internal/middleware"
 	"ozinse-backend/internal/repository"
 	"ozinse-backend/internal/service"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -36,6 +37,10 @@ func main() {
 	categoryRepo := repository.NewCategoryRepository(db)
 	categoryService := service.NewCategoryService(categoryRepo)
 	categoryHandler := handler.NewCategoryHandler(categoryService)
+
+	ageCategoryRepo := repository.NewAgeCategoryRepository(db)
+	ageCategoryService := service.NewAgeCategoryService(ageCategoryRepo)
+	ageCategoryHandler := handler.NewAgeCategoryHandler(ageCategoryService)
 
 	genreRepo := repository.NewGenreRepository(db)
 	genreService := service.NewGenreService(genreRepo)
@@ -84,6 +89,8 @@ func main() {
 		// Anyone can view data
 		api.GET("/categories", categoryHandler.GetAll)
 		api.GET("/categories/:id", categoryHandler.GetByID)
+		api.GET("/age-categories", ageCategoryHandler.GetAll)
+		api.GET("/age-categories/:id", ageCategoryHandler.GetByID)
 		api.GET("/genres", genreHandler.GetAll)
 		api.GET("/genres/:id", genreHandler.GetByID)
 		api.GET("/projects", projectHandler.GetAll)
@@ -93,7 +100,7 @@ func main() {
 		protected := api.Group("/")
 		protected.Use(middleware.AuthMiddleware(jwtSecret))
 		{
-	
+
 			adminOnly := protected.Group("/")
 			adminOnly.Use(middleware.AdminOnly())
 			{
@@ -101,6 +108,10 @@ func main() {
 				adminOnly.POST("/categories", categoryHandler.Create)
 				adminOnly.PUT("/categories/:id", categoryHandler.Update)
 				adminOnly.DELETE("/categories/:id", categoryHandler.Delete)
+
+				adminOnly.POST("/age-categories", ageCategoryHandler.Create)
+				adminOnly.PUT("/age-categories/:id", ageCategoryHandler.Update)
+				adminOnly.DELETE("/age-categories/:id", ageCategoryHandler.Delete)
 
 				adminOnly.POST("/genres", genreHandler.Create)
 				adminOnly.PUT("/genres/:id", genreHandler.Update)
