@@ -18,7 +18,7 @@ func NewProjectService(repo *repository.ProjectRepository) *ProjectService {
 
 // GetAll retrieves a paginated list of projects along with the total count of records.
 // It calculates the database offset based on the requested page and limit parameters.
-func (s *ProjectService) GetAll(page int, limit int) ([]model.Project, int, error) {
+func (s *ProjectService) GetAll(page int, limit int, search string) ([]model.Project, int, error) {
 	// Sanitize inputs to prevent negative or zero values
 	if page < 1 {
 		page = 1
@@ -31,7 +31,7 @@ func (s *ProjectService) GetAll(page int, limit int) ([]model.Project, int, erro
 	offset := (page - 1) * limit
 
 	// Call the repository layer with calculated pagination parameters
-	return s.repo.GetAll(limit, offset)
+	return s.repo.GetAll(limit, offset, search)
 }
 
 // GetByID retrieves a project by its ID.

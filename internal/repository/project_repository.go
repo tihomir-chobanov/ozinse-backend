@@ -24,12 +24,12 @@ func NewProjectRepository(db *sql.DB) *ProjectRepository {
 // We combine standard pagination (LIMIT/OFFSET) with native PostgreSQL JSON aggregation functions.
 // To provide proper pagination metadata (e.g., total pages), we first execute a lightweight COUNT query,
 // followed by the main data retrieval query. This prevents loading the entire database into memory.
-func (r *ProjectRepository) GetAll(limit int, offset int) ([]model.Project, int, error) {
+func (r *ProjectRepository) GetAll(limit int, offset int, search string) ([]model.Project, int, error) {
 
 	// 1. Fetch the total count of projects for pagination metadata
 	var totalCount int
-	countQuery := `SELECT COUNT(*) FROM project`
-	err := r.db.QueryRow(countQuery).Scan(&totalCount)
+	countQuery := `SELECT COUNT(*) FROM project p WHERE p.title ILIKE '%' || $1 || '%'`
+	err := r.db.QueryRow(countQuery, search).Scan(&totalCount)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -98,12 +98,13 @@ func (r *ProjectRepository) GetAll(limit int, offset int) ([]model.Project, int,
                 ), '[]') AS seasons
             
         FROM project p
+		WHERE p.title ILIKE '%' || $3 || '%' -- Case-insensitive search by title
 		ORDER BY p.id DESC -- Order by ID descending to show the newest projects first
 		LIMIT $1 OFFSET $2 -- Apply pagination constraints ($1 = limit, $2 = offset)
     `
 
 	// Execute the query
-	rows, err := r.db.Query(query, limit, offset)
+	rows, err := r.db.Query(query, limit, offset, search)
 	if err != nil {
 		return nil, 0, err
 	}

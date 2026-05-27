@@ -32,6 +32,7 @@ func NewProjectHandler(service *service.ProjectService) *ProjectHandler {
 // @Produce json
 // @Param page query int false "Page number (default: 1)"
 // @Param limit query int false "Number of items per page (default: 10)"
+// @Param search query string false "Search projects by title"
 // @Success 200 {object} gin.H "Includes 'data' array and 'pagination' object"
 // @Failure 500 {object} gin.H
 // @Router /api/projects [get]
@@ -39,13 +40,14 @@ func (h *ProjectHandler) GetAll(c *gin.Context) {
 	// 1. Get query parameters from the URL, providing string defaults
     pageStr := c.DefaultQuery("page", "1")
     limitStr := c.DefaultQuery("limit", "10")
+	search := c.Query("search") 
 
     // 2. Convert the string parameters to integers
     page, _ := strconv.Atoi(pageStr)
     limit, _ := strconv.Atoi(limitStr)
 
     // 3. Call the service layer with the pagination parameters
-    projects, totalCount, err := h.service.GetAll(page, limit)
+    projects, totalCount, err := h.service.GetAll(page, limit, search)
     if err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
