@@ -50,6 +50,14 @@ func main() {
 	projectService := service.NewProjectService(projectRepo)
 	projectHandler := handler.NewProjectHandler(projectService)
 
+	roleRepo := repository.NewRoleRepository(db)
+	roleService := service.NewRoleService(roleRepo)
+	roleHandler := handler.NewRoleHandler(roleService)
+
+	favoriteRepo := repository.NewFavoriteRepository(db)
+	favoriteService := service.NewFavoriteService(favoriteRepo)
+	favoriteHandler := handler.NewFavoriteHandler(favoriteService)
+
 	// --- NEW: Auth & User Dependencies ---
 	// Fetch the secret key from .env, or use a fallback for local development
 	jwtSecret := os.Getenv("JWT_SECRET")
@@ -59,8 +67,10 @@ func main() {
 
 	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
+	authService := service.NewAuthService(userRepo)
 	// Pass the service, the secret key, and the token expiration time (e.g., 24 hours)
-	authHandler := handler.NewAuthHandler(userService, jwtSecret, 24)
+	authHandler := handler.NewAuthHandler(authService, jwtSecret, 24)
+	userHandler := handler.NewUserHandler(userService)
 
 	// 5. Setup a Gin router
 	r := gin.Default()
@@ -85,6 +95,9 @@ func main() {
 	{
 		// 6.1 Public Routes (No token required)
 		api.POST("/auth/login", authHandler.Login) // The counter where users get their token
+		api.POST("/auth/register", authHandler.Register)
+		api.POST("/auth/forgot-password", authHandler.ForgotPassword)
+		api.POST("/auth/reset-password", authHandler.ResetPassword)
 
 		// Anyone can view data
 		api.GET("/categories", categoryHandler.GetAll)
@@ -95,11 +108,19 @@ func main() {
 		api.GET("/genres/:id", genreHandler.GetByID)
 		api.GET("/projects", projectHandler.GetAll)
 		api.GET("/projects/:id", projectHandler.GetByID)
+		api.GET("/projects/trending", projectHandler.GetTrending)
+		api.GET("/projects/:id/similar", projectHandler.GetSimilar)
 
 		// 6.2 Protected Routes (Require a valid JWT token)
 		protected := api.Group("/")
 		protected.Use(middleware.AuthMiddleware(jwtSecret))
 		{
+
+			protected.GET("/users/:id", userHandler.GetByID)
+			protected.PUT("/users/:id", userHandler.Update)
+
+			protected.POST("/users/favorites", favoriteHandler.AddFavorite)
+			protected.DELETE("/users/favorites/:project_id", favoriteHandler.RemoveFavorite)
 
 			adminOnly := protected.Group("/")
 			adminOnly.Use(middleware.AdminOnly())
@@ -120,6 +141,16 @@ func main() {
 				adminOnly.POST("/projects", projectHandler.Create)
 				adminOnly.PUT("/projects/:id", projectHandler.Update)
 				adminOnly.DELETE("/projects/:id", projectHandler.Delete)
+
+				adminOnly.POST("/roles", roleHandler.CreateRole)
+				adminOnly.GET("/roles", roleHandler.GetAllRoles)
+				adminOnly.GET("/roles/:id", roleHandler.GetRoleByID)
+				adminOnly.PUT("/roles/:id", roleHandler.UpdateRole)
+				adminOnly.DELETE("/roles/:id", roleHandler.DeleteRole)
+
+				adminOnly.GET("/users", userHandler.GetAll)
+				adminOnly.DELETE("/users/:id", userHandler.Delete)
+
 			}
 		}
 	}

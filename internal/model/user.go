@@ -13,4 +13,23 @@ type User struct {
 	RoleID    int       `json:"role_id"`
 	CreatedAt time.Time `json:"created_at"`
 	Image     string    `json:"image"`
+	Language  string    `json:"language"`
+	NotificationsEnabled bool `json:"notifications_enabled"`
+	DarkModeEnabled      bool `json:"dark_mode_enabled"`
+}
+
+type RegisterRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=7"`
+}
+
+// ForgotPasswordRequest defines the input when a user requests a reset link.
+type ForgotPasswordRequest struct {
+	Email string `json:"email" binding:"required,email"`
+}
+
+// ResetPasswordRequest defines the input when the user submits their new password.
+type ResetPasswordRequest struct {
+	Token       string `json:"token" binding:"required"`
+	NewPassword string `json:"new_password" binding:"required,min=8"`
 }

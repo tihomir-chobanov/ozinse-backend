@@ -115,7 +115,7 @@ func (h *ProjectHandler) Create(c *gin.Context) {
 
 	err := h.service.Create(&req.Project, req.GenreIDs, req.AgeCategoryIDs, req.CategoryIDs)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create project"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -177,4 +177,32 @@ func (h *ProjectHandler) Delete(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "successfully deleted"})
+}
+
+func (h *ProjectHandler) GetTrending(c *gin.Context) {
+    projects, err := h.service.GetTrending()
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+    c.JSON(http.StatusOK, projects)
+}
+
+// GetSimilar handles GET /api/projects/:id/similar
+func (h *ProjectHandler) GetSimilar(c *gin.Context) {
+	// Extract the project ID from the URL path
+	idParam := c.Param("id")
+	projectID, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid project ID"})
+		return
+	}
+
+	projects, err := h.service.GetSimilar(projectID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, projects)
 }

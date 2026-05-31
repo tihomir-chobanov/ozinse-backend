@@ -62,3 +62,11 @@ func (s *ProjectService) Update(c *model.Project) error {
 func (s *ProjectService) Delete(id int) error {
 	return s.repo.Delete(id)
 }
+
+func (s *ProjectService) GetTrending() ([]model.Project, error) {
+    return s.repo.GetTrendingProjects()
+}
+
+func (s *ProjectService) GetSimilar(projectID int) ([]model.Project, error) {
+	return s.repo.GetSimilarProjects(projectID)
+}

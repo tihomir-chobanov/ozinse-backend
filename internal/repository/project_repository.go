@@ -42,7 +42,7 @@ func (r *ProjectRepository) GetAll(limit int, offset int, search string) ([]mode
 	query := `
 		SELECT 
             p.id, p.title, p.description, p.release_year, p.cover_image_url, 
-            p.is_featured, p.type, p.duration, p.keywords, p.director, p.producer,
+            p.is_featured, p.type, p.duration, p.keywords, p.director, p.producer,p.created_at,
             
             -- Aggregate genres
             COALESCE((
@@ -122,7 +122,7 @@ func (r *ProjectRepository) GetAll(limit int, offset int, search string) ([]mode
 		// Scan the row columns into the respective struct fields and byte slices
 		err := rows.Scan(
 			&p.ID, &p.Title, &p.Description, &p.ReleaseYear, &p.CoverImageUrl,
-			&p.IsFeatured, &p.Type, &p.Duration, &p.Keywords, &p.Director, &p.Producer,
+			&p.IsFeatured, &p.Type, &p.Duration, &p.Keywords, &p.Director, &p.Producer, &p.CreatedAt,
 			&genresJSON, &ageCategoriesJSON, &categoriesJSON, &screenshotsJSON, &seasonsJSON,
 		)
 		if err != nil {
@@ -152,7 +152,7 @@ func (r *ProjectRepository) GetByID(id int) (*model.Project, error) {
 	query := `
         SELECT 
             p.id, p.title, p.description, p.release_year, p.cover_image_url, 
-            p.is_featured, p.type, p.duration, p.keywords, p.director, p.producer,
+            p.is_featured, p.type, p.duration, p.keywords, p.director, p.producer, p.created_at,
             
             COALESCE((SELECT json_agg(json_build_object('id', g.id, 'name', g.name, 'icon_url', g.icon_url)) FROM genre g JOIN project_genre pg ON g.id = pg.genre_id WHERE pg.project_id = p.id), '[]'),
             COALESCE((SELECT json_agg(json_build_object('id', ac.id, 'range', ac.range, 'icon_url', ac.icon_url)) FROM age_category ac JOIN project_age_category pac ON ac.id = pac.age_category_id WHERE pac.project_id = p.id), '[]'),
@@ -171,7 +171,7 @@ func (r *ProjectRepository) GetByID(id int) (*model.Project, error) {
 
 	err := r.db.QueryRow(query, id).Scan(
 		&p.ID, &p.Title, &p.Description, &p.ReleaseYear, &p.CoverImageUrl,
-		&p.IsFeatured, &p.Type, &p.Duration, &p.Keywords, &p.Director, &p.Producer,
+		&p.IsFeatured, &p.Type, &p.Duration, &p.Keywords, &p.Director, &p.Producer, &p.CreatedAt,
 		&genresJSON, &ageCategoriesJSON, &categoriesJSON, &screenshotsJSON, &seasonsJSON,
 	)
 	if err != nil {
@@ -198,12 +198,12 @@ func (r *ProjectRepository) Create(p *model.Project, genreIDs []int, ageCategory
 
 	// 2. Insert main project details into the 'project' table
 	query := `INSERT INTO project (title, description, release_year, cover_image_url, is_featured, type, duration, keywords, director, producer) 
-			  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`
+			  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, created_at`
 
 	err = tx.QueryRow(query,
 		p.Title, p.Description, p.ReleaseYear, p.CoverImageUrl,
 		p.IsFeatured, p.Type, p.Duration, p.Keywords, p.Director, p.Producer,
-	).Scan(&p.ID)
+	).Scan(&p.ID, &p.CreatedAt)
 
 	if err != nil {
 		return err
@@ -346,4 +346,102 @@ func (r *ProjectRepository) ExistsByName(name string) (bool, error) {
 		return false, err
 	}
 	return exists, err
+}
+
+// GetTrendingProjects retrieves the top 5 latest projects created within the last 7 days.
+func (r *ProjectRepository) GetTrendingProjects() ([]model.Project, error) {
+	query := `
+		SELECT 
+			p.id, p.title, p.description, p.release_year, p.cover_image_url, 
+			p.is_featured, p.type, p.duration, p.keywords, p.director, p.producer, p.created_at
+			
+		FROM project p
+		WHERE p.created_at >= NOW() - INTERVAL '7 days'
+		ORDER BY p.created_at DESC
+		LIMIT 5`
+
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var projects []model.Project
+
+	for rows.Next() {
+		var p model.Project
+
+		err := rows.Scan(
+			&p.ID, &p.Title, &p.Description, &p.ReleaseYear, &p.CoverImageUrl,
+			&p.IsFeatured, &p.Type, &p.Duration, &p.Keywords, &p.Director, &p.Producer, &p.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		projects = append(projects, p)
+	}
+
+	return projects, nil
+}
+
+// GetSimilarProjects retrieves up to 5 projects that share the same genres as the given project ID.
+func (r *ProjectRepository) GetSimilarProjects(projectID int) ([]model.Project, error) {
+	query := `
+    SELECT 
+        p.id, p.title, p.description, p.release_year, p.cover_image_url, 
+        p.is_featured, p.type, p.duration, p.keywords, p.director, p.producer, p.created_at,
+        
+        -- 1. here we get the genres for each project as a JSON array. We use COALESCE to return an empty array if there are no genres.
+        COALESCE((
+            SELECT json_agg(json_build_object('id', g.id, 'name', g.name, 'icon_url', g.icon_url))
+            FROM genre g
+            JOIN project_genre pg2 ON g.id = pg2.genre_id
+            WHERE pg2.project_id = p.id
+        ), '[]') AS genres
+        
+    FROM project p
+    WHERE p.id != $1 -- Eliminate the current project
+      AND p.id IN (
+          -- 2. Retrieve only films that have at least one common genre with our film
+          SELECT project_id FROM project_genre WHERE genre_id IN (
+              SELECT genre_id FROM project_genre WHERE project_id = $1
+          )
+      )
+      
+    -- 3. Order by: The ones with the most common genres go first, then by newest
+    ORDER BY (
+        SELECT COUNT(*) 
+        FROM project_genre pg3 
+        WHERE pg3.project_id = p.id 
+          AND pg3.genre_id IN (SELECT genre_id FROM project_genre WHERE project_id = $1)
+    ) DESC, p.created_at DESC
+    LIMIT 5`
+
+	rows, err := r.db.Query(query, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var projects []model.Project
+
+	for rows.Next() {
+		var p model.Project
+		var genresJSON []byte
+
+		err := rows.Scan(
+			&p.ID, &p.Title, &p.Description, &p.ReleaseYear, &p.CoverImageUrl,
+			&p.IsFeatured, &p.Type, &p.Duration, &p.Keywords, &p.Director, &p.Producer, &p.CreatedAt,
+			&genresJSON,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		json.Unmarshal(genresJSON, &p.Genres)
+		projects = append(projects, p)
+	}
+
+	return projects, nil
 }

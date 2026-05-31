@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 // Project represents a movie or series with metadata and relations.
 // swagger:model Project
 type Project struct {
@@ -20,6 +22,7 @@ type Project struct {
 	Screenshots   []ProjectScreenshot `json:"screenshots,omitempty"`
 	Seasons       []Season            `json:"seasons,omitempty"`
 	Episodes      []Episode           `json:"episodes,omitempty"`
+	CreatedAt     time.Time           `json:"created_at" example:"2024-01-01T12:00:00Z"`
 }
 
 const (
