@@ -20,7 +20,7 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 // GetByEmail retrieves a user record from the database by their unique email address.
 func (r *UserRepository) GetByEmail(email string) (*model.User, error) {
 	query := `
-		SELECT id, email, password, full_name, phone, birth_date, role_id, created_at, image, language, notifications_enabled, dark_mode_enabled
+		SELECT id, email, password, full_name, phone, birth_date, role_id, created_at, image
 		FROM users 
 		WHERE email = $1`
 
@@ -38,7 +38,7 @@ func (r *UserRepository) GetByEmail(email string) (*model.User, error) {
 	var user model.User
 	err = rows.Scan(
 		&user.ID, &user.Email, &user.Password, &user.FullName,
-		&user.Phone, &user.BirthDate, &user.RoleID, &user.CreatedAt, &user.Image, &user.Language, &user.NotificationsEnabled, &user.DarkModeEnabled,
+		&user.Phone, &user.BirthDate, &user.RoleID, &user.CreatedAt, &user.Image, 
 	)
 	if err != nil {
 		return nil, err
@@ -50,15 +50,15 @@ func (r *UserRepository) GetByEmail(email string) (*model.User, error) {
 // Create inserts a new user record into the users table.
 func (r *UserRepository) Create(user *model.User) error {
 	query := `
-		INSERT INTO users (email, password, full_name, phone, birth_date, role_id, image, language, notifications_enabled, dark_mode_enabled) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
+		INSERT INTO users (email, password, full_name, phone, birth_date, role_id, image) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7) 
 		RETURNING id, created_at`
 
 	// Execute the insert statement and scan the database-generated ID and CreatedAt fields
 	err := r.db.QueryRow(
 		query,
 		user.Email, user.Password, user.FullName,
-		user.Phone, user.BirthDate, user.RoleID, user.Image, user.Language, user.NotificationsEnabled, user.DarkModeEnabled,
+		user.Phone, user.BirthDate, user.RoleID, user.Image, 
 	).Scan(&user.ID, &user.CreatedAt)
 
 	return err
@@ -109,7 +109,7 @@ func (r *UserRepository) UpdatePassword(id int, hashedPassword string) error {
 }
 
 func (r *UserRepository) GetAll() ([]model.User, error) {
-	query := `SELECT id, email, full_name, phone, birth_date, role_id, created_at, image, language, notifications_enabled, dark_mode_enabled FROM users`
+	query := `SELECT id, email, full_name, phone, birth_date, role_id, created_at, image FROM users`
 	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -120,7 +120,7 @@ func (r *UserRepository) GetAll() ([]model.User, error) {
 	for rows.Next() {
 		var user model.User
 		err = rows.Scan(
-			&user.ID, &user.Email, &user.FullName, &user.Phone, &user.BirthDate, &user.RoleID, &user.CreatedAt, &user.Image, &user.Language, &user.NotificationsEnabled, &user.DarkModeEnabled,
+			&user.ID, &user.Email, &user.FullName, &user.Phone, &user.BirthDate, &user.RoleID, &user.CreatedAt, &user.Image,
 		)
 		if err != nil {
 			return nil, err
@@ -133,7 +133,7 @@ func (r *UserRepository) GetAll() ([]model.User, error) {
 
 func (r *UserRepository) GetByID(id int) (*model.User, error) {
 	query := `
-		SELECT id, email, password, full_name, phone, birth_date, role_id, created_at, image, language, notifications_enabled, dark_mode_enabled 
+		SELECT id, email, password, full_name, phone, birth_date, role_id, created_at, image
 		FROM users 
 		WHERE id = $1`
 	rows, err := r.db.Query(query, id)
@@ -148,7 +148,7 @@ func (r *UserRepository) GetByID(id int) (*model.User, error) {
 	var user model.User
 	err = rows.Scan(
 		&user.ID, &user.Email, &user.Password, &user.FullName,
-		&user.Phone, &user.BirthDate, &user.RoleID, &user.CreatedAt, &user.Image, &user.Language, &user.NotificationsEnabled, &user.DarkModeEnabled,
+		&user.Phone, &user.BirthDate, &user.RoleID, &user.CreatedAt, &user.Image,
 	)
 	if err != nil {
 		return nil, err
@@ -159,10 +159,10 @@ func (r *UserRepository) GetByID(id int) (*model.User, error) {
 func (r *UserRepository) Update(user *model.User) error {
 	query := `
 		UPDATE users 
-		SET email = $1, full_name = $2, phone = $3, birth_date = $4, role_id = $5, image = $6, language = $7, notifications_enabled = $8, dark_mode_enabled = $9
-		WHERE id = $10`
+		SET email = $1, full_name = $2, phone = $3, birth_date = $4, role_id = $5, image = $6, 
+		WHERE id = $7`
 	
-	res, err := r.db.Exec(query, user.Email, user.FullName, user.Phone, user.BirthDate, user.RoleID, user.Image, user.Language, user.NotificationsEnabled, user.DarkModeEnabled, user.ID)
+	res, err := r.db.Exec(query, user.Email, user.FullName, user.Phone, user.BirthDate, user.RoleID, user.Image,  user.ID)
 	if err != nil {
 		return err 
 	}

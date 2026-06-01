@@ -57,9 +57,6 @@ func (s *AuthService) Register(req *model.RegisterRequest) (*model.User, error) 
 		BirthDate: defaultBirthDate, // <-- Now using the parsed time.Time object
 		RoleID:    1,
 		Image:     "user.png",
-		Language:  "kk",
-		NotificationsEnabled: true,
-		DarkModeEnabled:      false,
 	}
 
 	// 5. Call repository layer to persist the data in PostgreSQL

@@ -13,9 +13,7 @@ type User struct {
 	RoleID    int       `json:"role_id"`
 	CreatedAt time.Time `json:"created_at"`
 	Image     string    `json:"image"`
-	Language  string    `json:"language"`
-	NotificationsEnabled bool `json:"notifications_enabled"`
-	DarkModeEnabled      bool `json:"dark_mode_enabled"`
+
 }
 
 type RegisterRequest struct {
