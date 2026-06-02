@@ -11,7 +11,7 @@ type Project struct {
 	ReleaseYear   int                 `json:"release_year" example:"2024"`
 	CoverImageUrl string              `json:"cover_image_url" example:"https://example.com/poster.png"`
 	IsFeatured    bool                `json:"is_featured" example:"false"`
-	Type          string              `json:"type" binding:"required,oneof=movie series" example:"movie"`
+	Type          string              `json:"type" example:"movie"`
 	Duration      int                 `json:"duration" example:"120"`
 	Keywords      string              `json:"keywords" example:"action,thriller"`
 	Director      string              `json:"director" example:"Jane Doe"`

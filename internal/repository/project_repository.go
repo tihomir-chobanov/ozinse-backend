@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"ozinse-backend/internal/model"
+	"errors"
+
 )
 
 // ProjectRepository provides CRUD access to project data and related relations.
@@ -444,4 +446,118 @@ func (r *ProjectRepository) GetSimilarProjects(projectID int) ([]model.Project, 
 	}
 
 	return projects, nil
+}
+
+func (r *ProjectRepository) CreateMainPageEntry(projectID int, position int, iconURL string) error {
+
+	_, err := r.db.Exec(`
+        INSERT INTO main_page_project (project_id, position, icon_url) 
+        VALUES ($1, $2, $3) 
+        ON CONFLICT (project_id) 
+        DO UPDATE SET position = EXCLUDED.position, icon_url = EXCLUDED.icon_url
+    `, projectID, position, iconURL)
+
+	return err
+}
+
+func (r *ProjectRepository) GetMainPageEntries() ([]model.MainPageProject, error) {
+	query := `
+        SELECT 
+            m.id, m.position, m.icon_url,
+            p.id, p.title, p.description, p.release_year, p.cover_image_url, p.type
+        FROM main_page_project m
+        JOIN project p ON m.project_id = p.id
+        ORDER BY m.position ASC`
+
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var entries []model.MainPageProject
+
+	for rows.Next() {
+		var m model.MainPageProject
+
+		err := rows.Scan(
+			&m.ID, &m.Position, &m.IconURL,
+			&m.Project.ID, &m.Project.Title, &m.Project.Description,
+			&m.Project.ReleaseYear, &m.Project.CoverImageUrl, &m.Project.Type,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		entries = append(entries, m)
+	}
+
+	return entries, nil
+}
+
+
+// GetByIDForMainPage fetches a main page entry by its own primary key (main_page_project.id)
+func (r *ProjectRepository) GetByIDForMainPage(mainPageID int) (*model.MainPageProject, error) {
+    query := `
+        SELECT
+            m.id, m.position, m.icon_url,
+            p.id, p.title, p.description, p.release_year, p.cover_image_url, p.type
+        FROM main_page_project m
+        JOIN project p ON m.project_id = p.id
+        WHERE m.id = $1` 
+
+    var m model.MainPageProject
+    err := r.db.QueryRow(query, mainPageID).Scan(
+        &m.ID, &m.Position, &m.IconURL,
+        &m.Project.ID, &m.Project.Title, &m.Project.Description,
+        &m.Project.ReleaseYear, &m.Project.CoverImageUrl, &m.Project.Type,
+    )
+    
+    if err != nil {
+        if errors.Is(err, sql.ErrNoRows) {
+            return nil, nil 
+        }
+        return nil, err 
+    }
+
+    return &m, nil
+}
+
+
+func (r *ProjectRepository) DeleteMainPageEntry(mainPageID int) error {
+    result, err := r.db.Exec(`DELETE FROM main_page_project WHERE id = $1`, mainPageID)
+    if err != nil {
+        return err
+    }
+
+    rowsAffected, err := result.RowsAffected()
+    if err != nil {
+        return err
+    }
+
+    if rowsAffected == 0 {
+        return fmt.Errorf("main page entry with id %d not found", mainPageID)
+    }
+
+    return nil
+}
+
+func (r *ProjectRepository) UpdateMainPageEntry(mainPageID int, position int, iconURL string) error {
+	result, err := r.db.Exec(`
+		UPDATE main_page_project 
+		SET position = $2, icon_url = $3 
+		WHERE id = $1
+	`, mainPageID, position, iconURL)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return fmt.Errorf("main page entry with id %d not found", mainPageID)
+	}	
+	return nil
 }

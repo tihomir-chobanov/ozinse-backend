@@ -150,6 +150,13 @@ func main() {
 
 				adminOnly.GET("/users", userHandler.GetAll)
 				adminOnly.DELETE("/users/:id", userHandler.Delete)
+				
+				adminOnly.POST("/main-page-entries", projectHandler.CreateMainPageEntry)
+				adminOnly.GET("/main-page-entries", projectHandler.GetMainPageEntries)
+				adminOnly.DELETE("/main-page-entries/:id", projectHandler.DeleteMainPageEntry)
+				adminOnly.PUT("/main-page-entries/:id", projectHandler.UpdateMainPageEntry)
+				adminOnly.GET("/main-page-entries/:id", projectHandler.GetByIDForMainPage)
+				
 
 			}
 		}

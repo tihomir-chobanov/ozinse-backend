@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"ozinse-backend/internal/model"
 	"ozinse-backend/internal/repository"
+	"errors"
 )
 
 // ProjectService handles business logic for project operations.
@@ -69,4 +70,31 @@ func (s *ProjectService) GetTrending() ([]model.Project, error) {
 
 func (s *ProjectService) GetSimilar(projectID int) ([]model.Project, error) {
 	return s.repo.GetSimilarProjects(projectID)
+}
+
+func (s *ProjectService) CreateMainPageEntry(projectID int, position int, iconURL string) error {
+	return s.repo.CreateMainPageEntry(projectID, position, iconURL)
+}
+
+func (s *ProjectService) GetMainPageEntries() ([]model.MainPageProject, error) {
+	return s.repo.GetMainPageEntries()
+}
+
+func (s *ProjectService) DeleteMainPageEntry(mainPageID int) error {
+	return s.repo.DeleteMainPageEntry(mainPageID)
+}
+
+func (s *ProjectService) UpdateMainPageEntry(mainPageId int, position int, iconURL string) error {
+	return s.repo.UpdateMainPageEntry(mainPageId, position, iconURL)
+}
+
+func (s *ProjectService) GetMainPageEntryById(mainPageEntryID int) (*model.MainPageProject, error) {
+	entry, err := s.repo.GetByIDForMainPage(mainPageEntryID)
+	if err != nil {
+		return nil, err
+	}
+	if entry == nil {
+		return nil, errors.New("main page entry not found")
+	}
+	return entry, nil
 }

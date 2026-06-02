@@ -206,3 +206,77 @@ func (h *ProjectHandler) GetSimilar(c *gin.Context) {
 
 	c.JSON(http.StatusOK, projects)
 }
+
+func (h *ProjectHandler) CreateMainPageEntry(c *gin.Context) {
+	var req model.CreateMainPageEntryRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if err := h.service.CreateMainPageEntry(req.ProjectID, req.Position, req.IconURL); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Main page entry created successfully"})
+}
+
+func (h *ProjectHandler) GetMainPageEntries(c *gin.Context) {
+	entries, err := h.service.GetMainPageEntries()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, entries)
+}
+
+func (h *ProjectHandler) GetByIDForMainPage(c *gin.Context) {
+	idParam := c.Param("id")
+	mainPageEntryID, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid main page entry ID"})
+		return
+	}
+	entry, err := h.service.GetMainPageEntryById(mainPageEntryID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if entry == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Main page entry not found"})
+		return
+	}
+	c.JSON(http.StatusOK, entry)
+}
+
+func (h *ProjectHandler) DeleteMainPageEntry(c *gin.Context) {
+	mainPageIDStr := c.Param("id")
+	mainPageID, err := strconv.Atoi(mainPageIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid main page entry ID"})
+		return
+	}	
+	if err := h.service.DeleteMainPageEntry(mainPageID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Main page entry deleted successfully"})
+}
+
+func (h *ProjectHandler) UpdateMainPageEntry(c *gin.Context) {
+	mainPageIDStr := c.Param("id")
+	mainPageID, err := strconv.Atoi(mainPageIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid main page entry ID"})
+		return
+	}
+	var req model.UpdateMainPageEntryRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if err := h.service.UpdateMainPageEntry(mainPageID, req.Position, req.IconURL); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Main page entry updated successfully"})
+}
