@@ -20,11 +20,11 @@ func NewGenreHandler(service *service.GenreService) *GenreHandler {
 // GetAll genres
 // @Summary List genres
 // @Description Returns all genres
-// @Tags categories
+// @Tags genres
 // @Accept json
 // @Produce json
 // @Success 200 {array} model.Genre
-// @Failure 500 {object} gin.H
+// @Failure 500 {object} map[string]string
 // @Router /api/genres [get]
 func (h *GenreHandler) GetAll(c *gin.Context) {
 	genres, err := h.service.GetAll()
@@ -38,13 +38,13 @@ func (h *GenreHandler) GetAll(c *gin.Context) {
 // GetByID genre by ID
 // @Summary Get genre by ID
 // @Description Returns a genre by its ID
-// @Tags categories
+// @Tags genres
 // @Accept json
 // @Produce json
 // @Param id path int true "Genre ID"
 // @Success 200 {object} model.Genre
-// @Failure 400 {object} gin.H
-// @Failure 404 {object} gin.H
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
 // @Router /api/genres/{id} [get]
 func (h *GenreHandler) GetByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -63,13 +63,14 @@ func (h *GenreHandler) GetByID(c *gin.Context) {
 // Create genre
 // @Summary Create genre
 // @Description Creates a new genre
-// @Tags categories
+// @Tags genres
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param genre body model.Genre true "Genre payload"
 // @Success 201 {object} model.Genre
-// @Failure 400 {object} gin.H
-// @Failure 500 {object} gin.H
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
 // @Router /api/genres [post]
 func (h *GenreHandler) Create(c *gin.Context) {
 	var genre model.Genre
@@ -87,14 +88,15 @@ func (h *GenreHandler) Create(c *gin.Context) {
 // Update genre
 // @Summary Update genre
 // @Description Updates an existing genre by ID
-// @Tags categories
+// @Tags genres
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path int true "Genre ID"
 // @Param genre body model.Genre true "Genre payload"
 // @Success 200 {object} model.Genre
-// @Failure 400 {object} gin.H
-// @Failure 500 {object} gin.H
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
 // @Router /api/genres/{id} [put]
 func (h *GenreHandler) Update(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -118,13 +120,14 @@ func (h *GenreHandler) Update(c *gin.Context) {
 // Delete genre
 // @Summary Delete genre
 // @Description Deletes a genre by ID
-// @Tags categories
+// @Tags genres
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path int true "Genre ID"
-// @Success 200 {object} gin.H
-// @Failure 400 {object} gin.H
-// @Failure 404 {object} gin.H
+// @Success 200 {object} map[string]string "successfully deleted"
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
 // @Router /api/genres/{id} [delete]
 func (h *GenreHandler) Delete(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))

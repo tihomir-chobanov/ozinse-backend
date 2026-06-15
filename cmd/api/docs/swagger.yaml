@@ -1,0 +1,1742 @@
+basePath: /
+definitions:
+  gin.H:
+    additionalProperties: {}
+    type: object
+  ozinse-backend_internal_model.Age_Category:
+    properties:
+      icon_url:
+        example: https://example.com/age-icon.png
+        type: string
+      id:
+        example: 1
+        type: integer
+      range:
+        example: 10-12
+        type: string
+    type: object
+  ozinse-backend_internal_model.Category:
+    properties:
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Drama
+        type: string
+    type: object
+  ozinse-backend_internal_model.CreateMainPageEntryRequest:
+    properties:
+      icon_url:
+        type: string
+      position:
+        minimum: 1
+        type: integer
+      project_id:
+        type: integer
+    required:
+    - icon_url
+    - position
+    - project_id
+    type: object
+  ozinse-backend_internal_model.CreateProjectDTO:
+    properties:
+      age_categories:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+        type: array
+      age_category_ids:
+        items:
+          type: integer
+        type: array
+      categories:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.Category'
+        type: array
+      category_ids:
+        items:
+          type: integer
+        type: array
+      cover_image_url:
+        example: https://example.com/poster.png
+        type: string
+      created_at:
+        example: "2024-01-01T12:00:00Z"
+        type: string
+      description:
+        example: A short description of the project.
+        type: string
+      director:
+        example: Jane Doe
+        type: string
+      duration:
+        example: 120
+        type: integer
+      episodes:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.Episode'
+        type: array
+      genre_ids:
+        items:
+          type: integer
+        type: array
+      genres:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+        type: array
+      id:
+        example: 1
+        type: integer
+      is_featured:
+        example: false
+        type: boolean
+      keywords:
+        example: action,thriller
+        type: string
+      producer:
+        example: John Smith
+        type: string
+      release_year:
+        example: 2024
+        type: integer
+      screenshots:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.ProjectScreenshot'
+        type: array
+      seasons:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.Season'
+        type: array
+      title:
+        example: Example Movie
+        type: string
+      type:
+        example: movie
+        type: string
+    type: object
+  ozinse-backend_internal_model.Episode:
+    properties:
+      duration:
+        example: 45
+        type: integer
+      episode_number:
+        example: 1
+        type: integer
+      id:
+        example: 1
+        type: integer
+      season_id:
+        example: 10
+        type: integer
+      youtube_video_id:
+        example: dQw4w9WgXcQ
+        type: string
+    type: object
+  ozinse-backend_internal_model.FavoriteRequest:
+    properties:
+      project_id:
+        type: integer
+    required:
+    - project_id
+    type: object
+  ozinse-backend_internal_model.ForgotPasswordRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  ozinse-backend_internal_model.Genre:
+    properties:
+      icon_url:
+        example: https://example.com/icon.png
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Action
+        type: string
+    type: object
+  ozinse-backend_internal_model.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  ozinse-backend_internal_model.MainPageProject:
+    properties:
+      icon_url:
+        type: string
+      id:
+        type: integer
+      position:
+        type: integer
+      project:
+        allOf:
+        - $ref: '#/definitions/ozinse-backend_internal_model.Project'
+        description: Вграждаме целия съществуващ модел Project
+    type: object
+  ozinse-backend_internal_model.Permission:
+    properties:
+      access_level:
+        type: string
+      id:
+        type: integer
+      module:
+        type: string
+      role_id:
+        type: integer
+    type: object
+  ozinse-backend_internal_model.Project:
+    properties:
+      age_categories:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+        type: array
+      categories:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.Category'
+        type: array
+      cover_image_url:
+        example: https://example.com/poster.png
+        type: string
+      created_at:
+        example: "2024-01-01T12:00:00Z"
+        type: string
+      description:
+        example: A short description of the project.
+        type: string
+      director:
+        example: Jane Doe
+        type: string
+      duration:
+        example: 120
+        type: integer
+      episodes:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.Episode'
+        type: array
+      genres:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+        type: array
+      id:
+        example: 1
+        type: integer
+      is_featured:
+        example: false
+        type: boolean
+      keywords:
+        example: action,thriller
+        type: string
+      producer:
+        example: John Smith
+        type: string
+      release_year:
+        example: 2024
+        type: integer
+      screenshots:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.ProjectScreenshot'
+        type: array
+      seasons:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.Season'
+        type: array
+      title:
+        example: Example Movie
+        type: string
+      type:
+        example: movie
+        type: string
+    type: object
+  ozinse-backend_internal_model.ProjectScreenshot:
+    properties:
+      id:
+        example: 1
+        type: integer
+      project_id:
+        example: 42
+        type: integer
+      url_to_image:
+        example: https://example.com/screenshot.png
+        type: string
+    type: object
+  ozinse-backend_internal_model.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 7
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  ozinse-backend_internal_model.ResetPasswordRequest:
+    properties:
+      new_password:
+        minLength: 8
+        type: string
+      token:
+        type: string
+    required:
+    - new_password
+    - token
+    type: object
+  ozinse-backend_internal_model.Role:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      permissions:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.Permission'
+        type: array
+    type: object
+  ozinse-backend_internal_model.Season:
+    properties:
+      episodes:
+        items:
+          $ref: '#/definitions/ozinse-backend_internal_model.Episode'
+        type: array
+      id:
+        example: 1
+        type: integer
+      project_id:
+        example: 42
+        type: integer
+      season_number:
+        example: 1
+        type: integer
+    type: object
+  ozinse-backend_internal_model.UpdateMainPageEntryRequest:
+    properties:
+      icon_url:
+        type: string
+      position:
+        minimum: 1
+        type: integer
+    required:
+    - icon_url
+    - position
+    type: object
+  ozinse-backend_internal_model.User:
+    properties:
+      birth_date:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      phone:
+        type: string
+      role_id:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API Server for Ozinse Video Platform Backend
+  title: Ozinse API
+  version: "1.0"
+paths:
+  /api/age-categories:
+    get:
+      consumes:
+      - application/json
+      description: Returns all age_categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List age_categories
+      tags:
+      - age_categories
+    post:
+      consumes:
+      - application/json
+      description: Creates a new age_category
+      parameters:
+      - description: Age_Category payload
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create age_category
+      tags:
+      - age_categories
+  /api/age-categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes an age_category by ID
+      parameters:
+      - description: Age_Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: successfully deleted
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete age_category
+      tags:
+      - age_categories
+    get:
+      consumes:
+      - application/json
+      description: Returns an age_category by its ID
+      parameters:
+      - description: Age_Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get age_category by ID
+      tags:
+      - age_categories
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing age_category by ID
+      parameters:
+      - description: Age_Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Age_Category payload
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update age_category
+      tags:
+      - age_categories
+  /api/auth/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Generates a 60-minute expiration token linked to the user's email.
+      parameters:
+      - description: User Email
+        in: body
+        name: forgot
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.ForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token generated successfully
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Invalid email format
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: User not found or DB error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Request a password reset token
+      tags:
+      - auth
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates user credentials and returns a secure JWT token.
+      parameters:
+      - description: Login Credentials
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns JWT token
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Invalid input format
+          schema:
+            $ref: '#/definitions/gin.H'
+        "401":
+          description: Invalid email or password
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Failed to generate access token
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: User login
+      tags:
+      - auth
+  /api/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user with email and password. Other fields get default
+        values.
+      parameters:
+      - description: Registration Credentials
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.User'
+        "400":
+          description: Invalid JSON or short password
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal server error or email already exists
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Register a new user
+      tags:
+      - auth
+  /api/auth/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Verifies if the token is valid and not expired, then updates the
+        user's password.
+      parameters:
+      - description: Token and New Password
+        in: body
+        name: reset
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.ResetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password updated successfully
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Invalid JSON input
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Invalid/expired token or server error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Reset password using token
+      tags:
+      - auth
+  /api/categories:
+    get:
+      consumes:
+      - application/json
+      description: Returns all categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ozinse-backend_internal_model.Category'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List categories
+      tags:
+      - categories
+    post:
+      consumes:
+      - application/json
+      description: Creates a new category
+      parameters:
+      - description: Category payload
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.Category'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Category'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create category
+      tags:
+      - categories
+  /api/categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a category by ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: successfully deleted
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete category
+      tags:
+      - categories
+    get:
+      consumes:
+      - application/json
+      description: Returns a category by its ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Category'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get category by ID
+      tags:
+      - categories
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing category by ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Category payload
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Category'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update category
+      tags:
+      - categories
+  /api/genres:
+    get:
+      consumes:
+      - application/json
+      description: Returns all genres
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List genres
+      tags:
+      - genres
+    post:
+      consumes:
+      - application/json
+      description: Creates a new genre
+      parameters:
+      - description: Genre payload
+        in: body
+        name: genre
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create genre
+      tags:
+      - genres
+  /api/genres/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a genre by ID
+      parameters:
+      - description: Genre ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: successfully deleted
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete genre
+      tags:
+      - genres
+    get:
+      consumes:
+      - application/json
+      description: Returns a genre by its ID
+      parameters:
+      - description: Genre ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get genre by ID
+      tags:
+      - genres
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing genre by ID
+      parameters:
+      - description: Genre ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Genre payload
+        in: body
+        name: genre
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update genre
+      tags:
+      - genres
+  /api/main-page-entries:
+    get:
+      consumes:
+      - application/json
+      description: Returns all projects assigned to the featured main page layout
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ozinse-backend_internal_model.MainPageProject'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      security:
+      - BearerAuth: []
+      summary: List main page entries
+      tags:
+      - main-page
+    post:
+      consumes:
+      - application/json
+      description: Shortcuts a project onto the featured landing main page area
+      parameters:
+      - description: Main page entry payload
+        in: body
+        name: entry
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.CreateMainPageEntryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      security:
+      - BearerAuth: []
+      summary: Add project to main page
+      tags:
+      - main-page
+  /api/main-page-entries/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Removes a featured shortcut entry from the main page by its config
+        ID
+      parameters:
+      - description: Main Page Entry ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      security:
+      - BearerAuth: []
+      summary: Delete main page entry
+      tags:
+      - main-page
+    get:
+      consumes:
+      - application/json
+      description: Returns details of a main page featured layout configuration by
+        its database ID
+      parameters:
+      - description: Main Page Entry ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.MainPageProject'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      security:
+      - BearerAuth: []
+      summary: Get main page entry by ID
+      tags:
+      - main-page
+    put:
+      consumes:
+      - application/json
+      description: Modifies position or meta layout details of an entry on the main
+        page by its ID
+      parameters:
+      - description: Main Page Entry ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Main page entry values
+        in: body
+        name: entry
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.UpdateMainPageEntryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      security:
+      - BearerAuth: []
+      summary: Update main page entry
+      tags:
+      - main-page
+  /api/projects:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of projects along with metadata
+      parameters:
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Number of items per page (default: 10)'
+        in: query
+        name: limit
+        type: integer
+      - description: Search projects by title
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Includes 'data' array and 'pagination' object
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List projects with pagination
+      tags:
+      - projects
+    post:
+      consumes:
+      - application/json
+      description: Creates a new project
+      parameters:
+      - description: Project payload
+        in: body
+        name: project
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.CreateProjectDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create project
+      tags:
+      - categories
+  /api/projects/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a project by ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Delete project
+      tags:
+      - categories
+    get:
+      consumes:
+      - application/json
+      description: Returns a project by its ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get project by ID
+      tags:
+      - categories
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing project by ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Project payload
+        in: body
+        name: project
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.CreateProjectDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Update project
+      tags:
+      - categories
+  /api/projects/{id}/similar:
+    get:
+      consumes:
+      - application/json
+      description: Returns projects that are related to the given project ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ozinse-backend_internal_model.Project'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get similar projects
+      tags:
+      - projects
+  /api/projects/trending:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of high-traffic or featured trending projects
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ozinse-backend_internal_model.Project'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List trending projects
+      tags:
+      - projects
+  /api/roles:
+    get:
+      description: Returns a full list of roles, each containing its associated module
+        permissions array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ozinse-backend_internal_model.Role'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all roles
+      tags:
+      - roles
+    post:
+      consumes:
+      - application/json
+      description: Inserts a new role name and maps specified module permissions
+      parameters:
+      - description: Role and Permissions Data
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.Role'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Role'
+        "400":
+          description: Invalid JSON input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new role with permissions
+      tags:
+      - roles
+  /api/roles/{id}:
+    delete:
+      description: Deletes a role record by ID. Foreign key cascade constraints handle
+        removing associated permissions automatically
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Role deleted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid ID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error or role not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a role
+      tags:
+      - roles
+    get:
+      description: Returns a single role object containing its mapped module permissions
+        array
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Role'
+        "400":
+          description: Invalid ID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error or role not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a role by ID
+      tags:
+      - roles
+    put:
+      consumes:
+      - application/json
+      description: Modifies role details by ID and replaces old permissions with the
+        new payload within a transaction
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated Role Data
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.Role'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.Role'
+        "400":
+          description: Invalid ID or JSON input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error or role not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update an existing role
+      tags:
+      - roles
+  /api/users:
+    get:
+      description: Returns a full list of registered users. Requires administrator
+        role.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ozinse-backend_internal_model.User'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all users (Admin only)
+      tags:
+      - users
+  /api/users/{id}:
+    delete:
+      description: Completely purges a user record by ID from the database. Requires
+        administrator role.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid user ID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a user (Admin only)
+      tags:
+      - users
+    get:
+      description: Returns full metadata for a single user profile. Password hashes
+        are automatically sanitized.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.User'
+        "400":
+          description: Invalid user ID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: User not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user profile by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Updates user fields based on the provided payload and profile ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ozinse-backend_internal_model.User'
+        "400":
+          description: Invalid payload or ID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update user profile
+      tags:
+      - users
+  /api/users/favorites:
+    post:
+      consumes:
+      - application/json
+      description: Links a project to the authenticated user's profile as a favorite
+        item
+      parameters:
+      - description: Favorite Payload (project_id)
+        in: body
+        name: favorite
+        required: true
+        schema:
+          $ref: '#/definitions/ozinse-backend_internal_model.FavoriteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Project added to favorites successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add project to favorites
+      tags:
+      - favorites
+  /api/users/favorites/{project_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Unlinks a project from the authenticated user's profile by project
+        ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: project_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Project removed from favorites successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid project ID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Project not found in favorites
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Remove project from favorites
+      tags:
+      - favorites
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -10,8 +10,20 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+
+	_ "ozinse-backend/cmd/api/docs" 
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title Ozinse API
+// @version 1.0
+// @description API Server for Ozinse Video Platform Backend
+// @host localhost:8080
+// @BasePath /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	// 1. Load environment variables
 	err := godotenv.Load()
@@ -74,6 +86,8 @@ func main() {
 
 	// 5. Setup a Gin router
 	r := gin.Default()
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Adding a welcome message
 	r.GET("/", func(c *gin.Context) {

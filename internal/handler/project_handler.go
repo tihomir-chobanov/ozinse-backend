@@ -1,20 +1,14 @@
 package handler
 
 import (
+	"math"
 	"net/http"
 	"ozinse-backend/internal/model"
 	"ozinse-backend/internal/service"
 	"strconv"
-	"math"
+
 	"github.com/gin-gonic/gin"
 )
-
-type CreateProjectDTO struct {
-	model.Project
-	GenreIDs       []int `json:"genre_ids"`
-	AgeCategoryIDs []int `json:"age_category_ids"`
-	CategoryIDs    []int `json:"category_ids"`
-}
 
 type ProjectHandler struct {
 	service *service.ProjectService
@@ -38,35 +32,35 @@ func NewProjectHandler(service *service.ProjectService) *ProjectHandler {
 // @Router /api/projects [get]
 func (h *ProjectHandler) GetAll(c *gin.Context) {
 	// 1. Get query parameters from the URL, providing string defaults
-    pageStr := c.DefaultQuery("page", "1")
-    limitStr := c.DefaultQuery("limit", "10")
-	search := c.Query("search") 
+	pageStr := c.DefaultQuery("page", "1")
+	limitStr := c.DefaultQuery("limit", "10")
+	search := c.Query("search")
 
-    // 2. Convert the string parameters to integers
-    page, _ := strconv.Atoi(pageStr)
-    limit, _ := strconv.Atoi(limitStr)
+	// 2. Convert the string parameters to integers
+	page, _ := strconv.Atoi(pageStr)
+	limit, _ := strconv.Atoi(limitStr)
 
-    // 3. Call the service layer with the pagination parameters
-    projects, totalCount, err := h.service.GetAll(page, limit, search)
-    if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
+	// 3. Call the service layer with the pagination parameters
+	projects, totalCount, err := h.service.GetAll(page, limit, search)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
-    // 4. Calculate the total number of pages using ceiling division
-    // Example: 25 total projects / 10 per page = 2.5 -> Ceil makes it 3 pages
-    totalPages := int(math.Ceil(float64(totalCount) / float64(limit)))
+	// 4. Calculate the total number of pages using ceiling division
+	// Example: 25 total projects / 10 per page = 2.5 -> Ceil makes it 3 pages
+	totalPages := int(math.Ceil(float64(totalCount) / float64(limit)))
 
-    // 5. Return a structured JSON response containing the data and metadata
-    c.JSON(http.StatusOK, gin.H{
-        "data": projects,
-        "pagination": gin.H{
-            "current_page":   page,
-            "per_page":       limit,
-            "total_projects": totalCount,
-            "total_pages":    totalPages,
-        },
-    })
+	// 5. Return a structured JSON response containing the data and metadata
+	c.JSON(http.StatusOK, gin.H{
+		"data": projects,
+		"pagination": gin.H{
+			"current_page":   page,
+			"per_page":       limit,
+			"total_projects": totalCount,
+			"total_pages":    totalPages,
+		},
+	})
 }
 
 // GetByID project by ID
@@ -100,13 +94,13 @@ func (h *ProjectHandler) GetByID(c *gin.Context) {
 // @Tags categories
 // @Accept json
 // @Produce json
-// @Param project body CreateProjectDTO true "Project payload"
+// @Param project body model.CreateProjectDTO true "Project payload"
 // @Success 201 {object} model.Project
 // @Failure 400 {object} gin.H
 // @Failure 500 {object} gin.H
 // @Router /api/projects [post]
 func (h *ProjectHandler) Create(c *gin.Context) {
-	var req CreateProjectDTO
+	var req model.CreateProjectDTO
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -129,7 +123,7 @@ func (h *ProjectHandler) Create(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path int true "Project ID"
-// @Param project body model.Project true "Project payload"
+// @Param project body model.CreateProjectDTO true "Project payload"
 // @Success 200 {object} model.Project
 // @Failure 400 {object} gin.H
 // @Failure 500 {object} gin.H
@@ -179,16 +173,35 @@ func (h *ProjectHandler) Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "successfully deleted"})
 }
 
+// GetTrending projects
+// @Summary List trending projects
+// @Description Returns a list of high-traffic or featured trending projects
+// @Tags projects
+// @Accept json
+// @Produce json
+// @Success 200 {array} model.Project
+// @Failure 500 {object} gin.H
+// @Router /api/projects/trending [get]
 func (h *ProjectHandler) GetTrending(c *gin.Context) {
-    projects, err := h.service.GetTrending()
-    if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
-    c.JSON(http.StatusOK, projects)
+	projects, err := h.service.GetTrending()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, projects)
 }
 
-// GetSimilar handles GET /api/projects/:id/similar
+// GetSimilar projects
+// @Summary Get similar projects
+// @Description Returns projects that are related to the given project ID
+// @Tags projects
+// @Accept json
+// @Produce json
+// @Param id path int true "Project ID"
+// @Success 200 {array} model.Project
+// @Failure 400 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /api/projects/{id}/similar [get]
 func (h *ProjectHandler) GetSimilar(c *gin.Context) {
 	// Extract the project ID from the URL path
 	idParam := c.Param("id")
@@ -207,6 +220,18 @@ func (h *ProjectHandler) GetSimilar(c *gin.Context) {
 	c.JSON(http.StatusOK, projects)
 }
 
+// CreateMainPageEntry adds a project to the main page
+// @Summary Add project to main page
+// @Description Shortcuts a project onto the featured landing main page area
+// @Tags main-page
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param entry body model.CreateMainPageEntryRequest true "Main page entry payload"
+// @Success 200 {object} gin.H
+// @Failure 400 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /api/main-page-entries [post]
 func (h *ProjectHandler) CreateMainPageEntry(c *gin.Context) {
 	var req model.CreateMainPageEntryRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -220,6 +245,16 @@ func (h *ProjectHandler) CreateMainPageEntry(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Main page entry created successfully"})
 }
 
+// GetMainPageEntries fetches all main page entries
+// @Summary List main page entries
+// @Description Returns all projects assigned to the featured main page layout
+// @Tags main-page
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Success 200 {array} model.MainPageProject
+// @Failure 500 {object} gin.H
+// @Router /api/main-page-entries [get]
 func (h *ProjectHandler) GetMainPageEntries(c *gin.Context) {
 	entries, err := h.service.GetMainPageEntries()
 	if err != nil {
@@ -229,6 +264,19 @@ func (h *ProjectHandler) GetMainPageEntries(c *gin.Context) {
 	c.JSON(http.StatusOK, entries)
 }
 
+// GetByIDForMainPage fetches a single main page entry by its configuration ID
+// @Summary Get main page entry by ID
+// @Description Returns details of a main page featured layout configuration by its database ID
+// @Tags main-page
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param id path int true "Main Page Entry ID"
+// @Success 200 {object} model.MainPageProject
+// @Failure 400 {object} gin.H
+// @Failure 404 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /api/main-page-entries/{id} [get]
 func (h *ProjectHandler) GetByIDForMainPage(c *gin.Context) {
 	idParam := c.Param("id")
 	mainPageEntryID, err := strconv.Atoi(idParam)
@@ -248,13 +296,25 @@ func (h *ProjectHandler) GetByIDForMainPage(c *gin.Context) {
 	c.JSON(http.StatusOK, entry)
 }
 
+// DeleteMainPageEntry removes a project from the main page layout
+// @Summary Delete main page entry
+// @Description Removes a featured shortcut entry from the main page by its config ID
+// @Tags main-page
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param id path int true "Main Page Entry ID"
+// @Success 200 {object} gin.H
+// @Failure 400 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /api/main-page-entries/{id} [delete]
 func (h *ProjectHandler) DeleteMainPageEntry(c *gin.Context) {
 	mainPageIDStr := c.Param("id")
 	mainPageID, err := strconv.Atoi(mainPageIDStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid main page entry ID"})
 		return
-	}	
+	}
 	if err := h.service.DeleteMainPageEntry(mainPageID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -262,6 +322,19 @@ func (h *ProjectHandler) DeleteMainPageEntry(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Main page entry deleted successfully"})
 }
 
+// UpdateMainPageEntry updates position or appearance of a main page entry
+// @Summary Update main page entry
+// @Description Modifies position or meta layout details of an entry on the main page by its ID
+// @Tags main-page
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param id path int true "Main Page Entry ID"
+// @Param entry body model.UpdateMainPageEntryRequest true "Main page entry values"
+// @Success 200 {object} gin.H
+// @Failure 400 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /api/main-page-entries/{id} [put]
 func (h *ProjectHandler) UpdateMainPageEntry(c *gin.Context) {
 	mainPageIDStr := c.Param("id")
 	mainPageID, err := strconv.Atoi(mainPageIDStr)

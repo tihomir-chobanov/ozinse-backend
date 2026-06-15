@@ -22,12 +22,13 @@ func NewRoleHandler(service *service.RoleService) *RoleHandler {
 // @Summary Create a new role with permissions
 // @Description Inserts a new role name and maps specified module permissions
 // @Tags roles
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param role body model.Role true "Role and Permissions Data"
 // @Success 201 {object} model.Role
-// @Failure 400 {object} gin.H "Invalid JSON input"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]string "Invalid JSON input"
+// @Failure 500 {object} map[string]string "Internal server error"
 // @Router /api/roles [post]
 func (h *RoleHandler) CreateRole(c *gin.Context) {
 	var req model.Role
@@ -49,9 +50,10 @@ func (h *RoleHandler) CreateRole(c *gin.Context) {
 // @Summary Get all roles
 // @Description Returns a full list of roles, each containing its associated module permissions array
 // @Tags roles
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} model.Role
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 500 {object} map[string]string "Internal server error"
 // @Router /api/roles [get]
 func (h *RoleHandler) GetAllRoles(c *gin.Context) {
 	roles, err := h.service.GetAllRoles()
@@ -67,11 +69,12 @@ func (h *RoleHandler) GetAllRoles(c *gin.Context) {
 // @Summary Get a role by ID
 // @Description Returns a single role object containing its mapped module permissions array
 // @Tags roles
+// @Security BearerAuth
 // @Produce json
 // @Param id path int true "Role ID"
 // @Success 200 {object} model.Role
-// @Failure 400 {object} gin.H "Invalid ID format"
-// @Failure 500 {object} gin.H "Internal server error or role not found"
+// @Failure 400 {object} map[string]string "Invalid ID format"
+// @Failure 500 {object} map[string]string "Internal server error or role not found"
 // @Router /api/roles/{id} [get]
 func (h *RoleHandler) GetRoleByID(c *gin.Context) {
 	idStr := c.Param("id")
@@ -94,13 +97,14 @@ func (h *RoleHandler) GetRoleByID(c *gin.Context) {
 // @Summary Update an existing role
 // @Description Modifies role details by ID and replaces old permissions with the new payload within a transaction
 // @Tags roles
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path int true "Role ID"
 // @Param role body model.Role true "Updated Role Data"
 // @Success 200 {object} model.Role
-// @Failure 400 {object} gin.H "Invalid ID or JSON input"
-// @Failure 500 {object} gin.H "Internal server error or role not found"
+// @Failure 400 {object} map[string]string "Invalid ID or JSON input"
+// @Failure 500 {object} map[string]string "Internal server error or role not found"
 // @Router /api/roles/{id} [put]
 func (h *RoleHandler) UpdateRole(c *gin.Context) {
 	idStr := c.Param("id")
@@ -130,10 +134,11 @@ func (h *RoleHandler) UpdateRole(c *gin.Context) {
 // @Summary Delete a role
 // @Description Deletes a role record by ID. Foreign key cascade constraints handle removing associated permissions automatically
 // @Tags roles
+// @Security BearerAuth
 // @Param id path int true "Role ID"
-// @Success 200 {object} gin.H "Role deleted successfully"
-// @Failure 400 {object} gin.H "Invalid ID format"
-// @Failure 500 {object} gin.H "Internal server error or role not found"
+// @Success 200 {object} map[string]string "Role deleted successfully"
+// @Failure 400 {object} map[string]string "Invalid ID format"
+// @Failure 500 {object} map[string]string "Internal server error or role not found"
 // @Router /api/roles/{id} [delete]
 func (h *RoleHandler) DeleteRole(c *gin.Context) {
 	idStr := c.Param("id")

@@ -5,7 +5,6 @@ import (
 	"ozinse-backend/internal/model"
 	"ozinse-backend/internal/service"
 	"strconv"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,8 +23,8 @@ func NewAgeCategoryHandler(service *service.AgeCategoryService) *AgeCategoryHand
 // @Accept json
 // @Produce json
 // @Success 200 {array} model.Age_Category
-// @Failure 500 {object} gin.H
-// @Router /api/categories [get]
+// @Failure 500 {object} map[string]string
+// @Router /api/age-categories [get]
 func (h *AgeCategoryHandler) GetAll(c *gin.Context) {
 	age_categories, err := h.service.GetAll()
 	if err != nil {
@@ -43,9 +42,9 @@ func (h *AgeCategoryHandler) GetAll(c *gin.Context) {
 // @Produce json
 // @Param id path int true "Age_Category ID"
 // @Success 200 {object} model.Age_Category
-// @Failure 400 {object} gin.H
-// @Failure 404 {object} gin.H
-// @Router /api/categories/{id} [get]
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Router /api/age-categories/{id} [get]  
 func (h *AgeCategoryHandler) GetByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -64,13 +63,14 @@ func (h *AgeCategoryHandler) GetByID(c *gin.Context) {
 // @Summary Create age_category
 // @Description Creates a new age_category
 // @Tags age_categories
+// @Security BearerAuth  
 // @Accept json
 // @Produce json
 // @Param category body model.Age_Category true "Age_Category payload"
 // @Success 201 {object} model.Age_Category
-// @Failure 400 {object} gin.H
-// @Failure 500 {object} gin.H
-// @Router /api/categories [post]
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/age-categories [post]  
 func (h *AgeCategoryHandler) Create(c *gin.Context) {
 	var age_category model.Age_Category
 	if err := c.ShouldBindJSON(&age_category); err != nil {
@@ -88,14 +88,15 @@ func (h *AgeCategoryHandler) Create(c *gin.Context) {
 // @Summary Update age_category
 // @Description Updates an existing age_category by ID
 // @Tags age_categories
+// @Security BearerAuth  
 // @Accept json
 // @Produce json
 // @Param id path int true "Age_Category ID"
 // @Param category body model.Age_Category true "Age_Category payload"
 // @Success 200 {object} model.Age_Category
-// @Failure 400 {object} gin.H
-// @Failure 500 {object} gin.H
-// @Router /api/categories/{id} [put]
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/age-categories/{id} [put]  
 func (h *AgeCategoryHandler) Update(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -119,13 +120,14 @@ func (h *AgeCategoryHandler) Update(c *gin.Context) {
 // @Summary Delete age_category
 // @Description Deletes an age_category by ID
 // @Tags age_categories
+// @Security BearerAuth  
 // @Accept json
 // @Produce json
 // @Param id path int true "Age_Category ID"
-// @Success 200 {object} gin.H
-// @Failure 400 {object} gin.H
-// @Failure 404 {object} gin.H
-// @Router /api/categories/{id} [delete]
+// @Success 200 {object} map[string]string "successfully deleted"
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Router /api/age-categories/{id} [delete]  
 func (h *AgeCategoryHandler) Delete(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

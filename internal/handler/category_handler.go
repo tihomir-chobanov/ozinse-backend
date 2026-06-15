@@ -24,7 +24,7 @@ func NewCategoryHandler(service *service.CategoryService) *CategoryHandler {
 // @Accept json
 // @Produce json
 // @Success 200 {array} model.Category
-// @Failure 500 {object} gin.H
+// @Failure 500 {object} map[string]string
 // @Router /api/categories [get]
 func (h *CategoryHandler) GetAll(c *gin.Context) {
 	categories, err := h.service.GetAll()
@@ -43,8 +43,8 @@ func (h *CategoryHandler) GetAll(c *gin.Context) {
 // @Produce json
 // @Param id path int true "Category ID"
 // @Success 200 {object} model.Category
-// @Failure 400 {object} gin.H
-// @Failure 404 {object} gin.H
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
 // @Router /api/categories/{id} [get]
 func (h *CategoryHandler) GetByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -64,12 +64,13 @@ func (h *CategoryHandler) GetByID(c *gin.Context) {
 // @Summary Create category
 // @Description Creates a new category
 // @Tags categories
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param category body model.Category true "Category payload"
 // @Success 201 {object} model.Category
-// @Failure 400 {object} gin.H
-// @Failure 500 {object} gin.H
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
 // @Router /api/categories [post]
 func (h *CategoryHandler) Create(c *gin.Context) {
 	var category model.Category
@@ -88,13 +89,14 @@ func (h *CategoryHandler) Create(c *gin.Context) {
 // @Summary Update category
 // @Description Updates an existing category by ID
 // @Tags categories
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path int true "Category ID"
 // @Param category body model.Category true "Category payload"
 // @Success 200 {object} model.Category
-// @Failure 400 {object} gin.H
-// @Failure 500 {object} gin.H
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
 // @Router /api/categories/{id} [put]
 func (h *CategoryHandler) Update(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -119,12 +121,13 @@ func (h *CategoryHandler) Update(c *gin.Context) {
 // @Summary Delete category
 // @Description Deletes a category by ID
 // @Tags categories
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path int true "Category ID"
-// @Success 200 {object} gin.H
-// @Failure 400 {object} gin.H
-// @Failure 404 {object} gin.H
+// @Success 200 {object} map[string]string "successfully deleted" 
+// @Failure 400 {object} map[string]string 
+// @Failure 404 {object} map[string]string 
 // @Router /api/categories/{id} [delete]
 func (h *CategoryHandler) Delete(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))

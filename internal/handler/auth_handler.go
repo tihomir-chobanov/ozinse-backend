@@ -9,10 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type LoginRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
-}
+
 
 type AuthHandler struct {
 	authService *service.AuthService
@@ -29,8 +26,19 @@ func NewAuthHandler(authService *service.AuthService, secret string, expiry int)
 }
 
 // Login handles the user authentication process.
+// @Summary User login
+// @Description Authenticates user credentials and returns a secure JWT token.
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param login body model.LoginRequest true "Login Credentials" // <-- ПРОМЯНА: става model.LoginRequest
+// @Success 200 {object} gin.H "Returns JWT token"
+// @Failure 400 {object} gin.H "Invalid input format"
+// @Failure 401 {object} gin.H "Invalid email or password"
+// @Failure 500 {object} gin.H "Failed to generate access token"
+// @Router /api/auth/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
-	var req LoginRequest
+	var req  model.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input format"})
 		return

@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	
+	"time"
+)
 
 // Project represents a movie or series with metadata and relations.
 // swagger:model Project
@@ -23,6 +26,13 @@ type Project struct {
 	Seasons       []Season            `json:"seasons,omitempty"`
 	Episodes      []Episode           `json:"episodes,omitempty"`
 	CreatedAt     time.Time           `json:"created_at" example:"2024-01-01T12:00:00Z"`
+}
+
+type CreateProjectDTO struct {
+	Project
+	GenreIDs       []int `json:"genre_ids"`
+	AgeCategoryIDs []int `json:"age_category_ids"`
+	CategoryIDs    []int `json:"category_ids"`
 }
 
 const (
