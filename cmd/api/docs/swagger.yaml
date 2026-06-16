@@ -1,9 +1,6 @@
 basePath: /
 definitions:
-  gin.H:
-    additionalProperties: {}
-    type: object
-  ozinse-backend_internal_model.Age_Category:
+  model.Age_Category:
     properties:
       icon_url:
         example: https://example.com/age-icon.png
@@ -15,7 +12,7 @@ definitions:
         example: 10-12
         type: string
     type: object
-  ozinse-backend_internal_model.Category:
+  model.Category:
     properties:
       id:
         example: 1
@@ -24,7 +21,16 @@ definitions:
         example: Drama
         type: string
     type: object
-  ozinse-backend_internal_model.CreateMainPageEntryRequest:
+  model.CategoryMovieCount:
+    properties:
+      category_id:
+        type: integer
+      category_name:
+        type: string
+      total_movies:
+        type: integer
+    type: object
+  model.CreateMainPageEntryRequest:
     properties:
       icon_url:
         type: string
@@ -38,11 +44,11 @@ definitions:
     - position
     - project_id
     type: object
-  ozinse-backend_internal_model.CreateProjectDTO:
+  model.CreateProjectDTO:
     properties:
       age_categories:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+          $ref: '#/definitions/model.Age_Category'
         type: array
       age_category_ids:
         items:
@@ -50,7 +56,7 @@ definitions:
         type: array
       categories:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.Category'
+          $ref: '#/definitions/model.Category'
         type: array
       category_ids:
         items:
@@ -73,7 +79,7 @@ definitions:
         type: integer
       episodes:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.Episode'
+          $ref: '#/definitions/model.Episode'
         type: array
       genre_ids:
         items:
@@ -81,7 +87,7 @@ definitions:
         type: array
       genres:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+          $ref: '#/definitions/model.Genre'
         type: array
       id:
         example: 1
@@ -100,11 +106,11 @@ definitions:
         type: integer
       screenshots:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.ProjectScreenshot'
+          $ref: '#/definitions/model.ProjectScreenshot'
         type: array
       seasons:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.Season'
+          $ref: '#/definitions/model.Season'
         type: array
       title:
         example: Example Movie
@@ -113,7 +119,7 @@ definitions:
         example: movie
         type: string
     type: object
-  ozinse-backend_internal_model.Episode:
+  model.Episode:
     properties:
       duration:
         example: 45
@@ -131,21 +137,21 @@ definitions:
         example: dQw4w9WgXcQ
         type: string
     type: object
-  ozinse-backend_internal_model.FavoriteRequest:
+  model.FavoriteRequest:
     properties:
       project_id:
         type: integer
     required:
     - project_id
     type: object
-  ozinse-backend_internal_model.ForgotPasswordRequest:
+  model.ForgotPasswordRequest:
     properties:
       email:
         type: string
     required:
     - email
     type: object
-  ozinse-backend_internal_model.Genre:
+  model.Genre:
     properties:
       icon_url:
         example: https://example.com/icon.png
@@ -157,7 +163,7 @@ definitions:
         example: Action
         type: string
     type: object
-  ozinse-backend_internal_model.LoginRequest:
+  model.LoginRequest:
     properties:
       email:
         type: string
@@ -167,7 +173,7 @@ definitions:
     - email
     - password
     type: object
-  ozinse-backend_internal_model.MainPageProject:
+  model.MainPageProject:
     properties:
       icon_url:
         type: string
@@ -177,10 +183,10 @@ definitions:
         type: integer
       project:
         allOf:
-        - $ref: '#/definitions/ozinse-backend_internal_model.Project'
+        - $ref: '#/definitions/model.Project'
         description: Вграждаме целия съществуващ модел Project
     type: object
-  ozinse-backend_internal_model.Permission:
+  model.Permission:
     properties:
       access_level:
         type: string
@@ -191,15 +197,15 @@ definitions:
       role_id:
         type: integer
     type: object
-  ozinse-backend_internal_model.Project:
+  model.Project:
     properties:
       age_categories:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+          $ref: '#/definitions/model.Age_Category'
         type: array
       categories:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.Category'
+          $ref: '#/definitions/model.Category'
         type: array
       cover_image_url:
         example: https://example.com/poster.png
@@ -218,11 +224,11 @@ definitions:
         type: integer
       episodes:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.Episode'
+          $ref: '#/definitions/model.Episode'
         type: array
       genres:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+          $ref: '#/definitions/model.Genre'
         type: array
       id:
         example: 1
@@ -241,11 +247,11 @@ definitions:
         type: integer
       screenshots:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.ProjectScreenshot'
+          $ref: '#/definitions/model.ProjectScreenshot'
         type: array
       seasons:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.Season'
+          $ref: '#/definitions/model.Season'
         type: array
       title:
         example: Example Movie
@@ -254,7 +260,7 @@ definitions:
         example: movie
         type: string
     type: object
-  ozinse-backend_internal_model.ProjectScreenshot:
+  model.ProjectScreenshot:
     properties:
       id:
         example: 1
@@ -266,7 +272,7 @@ definitions:
         example: https://example.com/screenshot.png
         type: string
     type: object
-  ozinse-backend_internal_model.RegisterRequest:
+  model.RegisterRequest:
     properties:
       email:
         type: string
@@ -277,7 +283,7 @@ definitions:
     - email
     - password
     type: object
-  ozinse-backend_internal_model.ResetPasswordRequest:
+  model.ResetPasswordRequest:
     properties:
       new_password:
         minLength: 8
@@ -288,7 +294,7 @@ definitions:
     - new_password
     - token
     type: object
-  ozinse-backend_internal_model.Role:
+  model.Role:
     properties:
       id:
         type: integer
@@ -296,14 +302,14 @@ definitions:
         type: string
       permissions:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.Permission'
+          $ref: '#/definitions/model.Permission'
         type: array
     type: object
-  ozinse-backend_internal_model.Season:
+  model.Season:
     properties:
       episodes:
         items:
-          $ref: '#/definitions/ozinse-backend_internal_model.Episode'
+          $ref: '#/definitions/model.Episode'
         type: array
       id:
         example: 1
@@ -315,7 +321,7 @@ definitions:
         example: 1
         type: integer
     type: object
-  ozinse-backend_internal_model.UpdateMainPageEntryRequest:
+  model.UpdateMainPageEntryRequest:
     properties:
       icon_url:
         type: string
@@ -326,7 +332,7 @@ definitions:
     - icon_url
     - position
     type: object
-  ozinse-backend_internal_model.User:
+  model.User:
     properties:
       birth_date:
         type: string
@@ -364,7 +370,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+              $ref: '#/definitions/model.Age_Category'
             type: array
         "500":
           description: Internal Server Error
@@ -378,23 +384,35 @@ paths:
     post:
       consumes:
       - application/json
-      description: Creates a new age_category
+      description: Creates a new age_category. Requires administrator role.
       parameters:
       - description: Age_Category payload
         in: body
         name: category
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+          $ref: '#/definitions/model.Age_Category'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+            $ref: '#/definitions/model.Age_Category'
         "400":
           description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
           schema:
             additionalProperties:
               type: string
@@ -407,14 +425,14 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Create age_category
+      summary: Create age_category (Admin only)
       tags:
       - age_categories
   /api/age-categories/{id}:
     delete:
       consumes:
       - application/json
-      description: Deletes an age_category by ID
+      description: Deletes an age_category by ID. Requires administrator role.
       parameters:
       - description: Age_Category ID
         in: path
@@ -436,6 +454,18 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "404":
           description: Not Found
           schema:
@@ -444,7 +474,7 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Delete age_category
+      summary: Delete age_category (Admin only)
       tags:
       - age_categories
     get:
@@ -463,7 +493,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+            $ref: '#/definitions/model.Age_Category'
         "400":
           description: Bad Request
           schema:
@@ -482,7 +512,8 @@ paths:
     put:
       consumes:
       - application/json
-      description: Updates an existing age_category by ID
+      description: Updates an existing age_category by ID. Requires administrator
+        role.
       parameters:
       - description: Age_Category ID
         in: path
@@ -494,16 +525,28 @@ paths:
         name: category
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+          $ref: '#/definitions/model.Age_Category'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Age_Category'
+            $ref: '#/definitions/model.Age_Category'
         "400":
           description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
           schema:
             additionalProperties:
               type: string
@@ -516,7 +559,7 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Update age_category
+      summary: Update age_category (Admin only)
       tags:
       - age_categories
   /api/auth/forgot-password:
@@ -530,22 +573,28 @@ paths:
         name: forgot
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.ForgotPasswordRequest'
+          $ref: '#/definitions/model.ForgotPasswordRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Token generated successfully
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Invalid email format
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: User not found or DB error
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
       summary: Request a password reset token
       tags:
       - auth
@@ -560,26 +609,34 @@ paths:
         name: login
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.LoginRequest'
+          $ref: '#/definitions/model.LoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Returns JWT token
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Invalid input format
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "401":
           description: Invalid email or password
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Failed to generate access token
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
       summary: User login
       tags:
       - auth
@@ -595,22 +652,26 @@ paths:
         name: register
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.RegisterRequest'
+          $ref: '#/definitions/model.RegisterRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.User'
+            $ref: '#/definitions/model.User'
         "400":
           description: Invalid JSON or short password
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal server error or email already exists
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
       summary: Register a new user
       tags:
       - auth
@@ -626,22 +687,28 @@ paths:
         name: reset
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.ResetPasswordRequest'
+          $ref: '#/definitions/model.ResetPasswordRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Password updated successfully
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Invalid JSON input
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Invalid/expired token or server error
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
       summary: Reset password using token
       tags:
       - auth
@@ -657,7 +724,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ozinse-backend_internal_model.Category'
+              $ref: '#/definitions/model.Category'
             type: array
         "500":
           description: Internal Server Error
@@ -671,23 +738,35 @@ paths:
     post:
       consumes:
       - application/json
-      description: Creates a new category
+      description: Creates a new category. Requires administrator role.
       parameters:
       - description: Category payload
         in: body
         name: category
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.Category'
+          $ref: '#/definitions/model.Category'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Category'
+            $ref: '#/definitions/model.Category'
         "400":
           description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
           schema:
             additionalProperties:
               type: string
@@ -700,14 +779,14 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Create category
+      summary: Create category (Admin only)
       tags:
       - categories
   /api/categories/{id}:
     delete:
       consumes:
       - application/json
-      description: Deletes a category by ID
+      description: Deletes a category by ID. Requires administrator role.
       parameters:
       - description: Category ID
         in: path
@@ -729,6 +808,18 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "404":
           description: Not Found
           schema:
@@ -737,7 +828,7 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Delete category
+      summary: Delete category (Admin only)
       tags:
       - categories
     get:
@@ -756,7 +847,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Category'
+            $ref: '#/definitions/model.Category'
         "400":
           description: Bad Request
           schema:
@@ -775,7 +866,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: Updates an existing category by ID
+      description: Updates an existing category by ID. Requires administrator role.
       parameters:
       - description: Category ID
         in: path
@@ -787,16 +878,28 @@ paths:
         name: category
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.Category'
+          $ref: '#/definitions/model.Category'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Category'
+            $ref: '#/definitions/model.Category'
         "400":
           description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
           schema:
             additionalProperties:
               type: string
@@ -809,7 +912,43 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Update category
+      summary: Update category (Admin only)
+      tags:
+      - categories
+  /api/categories/movie-count:
+    get:
+      description: Returns a list of categories along with the total count of associated
+        projects. Requires administrator role.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.CategoryMovieCount'
+            type: array
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get movie count per category (Admin only)
       tags:
       - categories
   /api/genres:
@@ -824,7 +963,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+              $ref: '#/definitions/model.Genre'
             type: array
         "500":
           description: Internal Server Error
@@ -838,23 +977,35 @@ paths:
     post:
       consumes:
       - application/json
-      description: Creates a new genre
+      description: Creates a new genre. Requires administrator role.
       parameters:
       - description: Genre payload
         in: body
         name: genre
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+          $ref: '#/definitions/model.Genre'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+            $ref: '#/definitions/model.Genre'
         "400":
           description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
           schema:
             additionalProperties:
               type: string
@@ -867,14 +1018,14 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Create genre
+      summary: Create genre (Admin only)
       tags:
       - genres
   /api/genres/{id}:
     delete:
       consumes:
       - application/json
-      description: Deletes a genre by ID
+      description: Deletes a genre by ID. Requires administrator role.
       parameters:
       - description: Genre ID
         in: path
@@ -896,6 +1047,18 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "404":
           description: Not Found
           schema:
@@ -904,7 +1067,7 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Delete genre
+      summary: Delete genre (Admin only)
       tags:
       - genres
     get:
@@ -923,7 +1086,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+            $ref: '#/definitions/model.Genre'
         "400":
           description: Bad Request
           schema:
@@ -942,7 +1105,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: Updates an existing genre by ID
+      description: Updates an existing genre by ID. Requires administrator role.
       parameters:
       - description: Genre ID
         in: path
@@ -954,16 +1117,28 @@ paths:
         name: genre
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+          $ref: '#/definitions/model.Genre'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Genre'
+            $ref: '#/definitions/model.Genre'
         "400":
           description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
           schema:
             additionalProperties:
               type: string
@@ -976,14 +1151,15 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Update genre
+      summary: Update genre (Admin only)
       tags:
       - genres
   /api/main-page-entries:
     get:
       consumes:
       - application/json
-      description: Returns all projects assigned to the featured main page layout
+      description: Returns all projects assigned to the featured main page layout.
+        Requires administrator role.
       produces:
       - application/json
       responses:
@@ -991,46 +1167,79 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ozinse-backend_internal_model.MainPageProject'
+              $ref: '#/definitions/model.MainPageProject'
             type: array
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
       security:
       - BearerAuth: []
-      summary: List main page entries
+      summary: List main page entries (Admin only)
       tags:
       - main-page
     post:
       consumes:
       - application/json
-      description: Shortcuts a project onto the featured landing main page area
+      description: Shortcuts a project onto the featured landing main page area. Requires
+        administrator role.
       parameters:
       - description: Main page entry payload
         in: body
         name: entry
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.CreateMainPageEntryRequest'
+          $ref: '#/definitions/model.CreateMainPageEntryRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Main page entry created successfully
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
       security:
       - BearerAuth: []
-      summary: Add project to main page
+      summary: Add project to main page (Admin only)
       tags:
       - main-page
   /api/main-page-entries/{id}:
@@ -1038,7 +1247,7 @@ paths:
       consumes:
       - application/json
       description: Removes a featured shortcut entry from the main page by its config
-        ID
+        ID. Requires administrator role.
       parameters:
       - description: Main Page Entry ID
         in: path
@@ -1049,27 +1258,45 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Main page entry deleted successfully
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
       security:
       - BearerAuth: []
-      summary: Delete main page entry
+      summary: Delete main page entry (Admin only)
       tags:
       - main-page
     get:
       consumes:
       - application/json
       description: Returns details of a main page featured layout configuration by
-        its database ID
+        its database ID. Requires administrator role.
       parameters:
       - description: Main Page Entry ID
         in: path
@@ -1082,29 +1309,47 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.MainPageProject'
+            $ref: '#/definitions/model.MainPageProject'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
       security:
       - BearerAuth: []
-      summary: Get main page entry by ID
+      summary: Get main page entry by ID (Admin only)
       tags:
       - main-page
     put:
       consumes:
       - application/json
       description: Modifies position or meta layout details of an entry on the main
-        page by its ID
+        page by its ID. Requires administrator role.
       parameters:
       - description: Main Page Entry ID
         in: path
@@ -1116,25 +1361,43 @@ paths:
         name: entry
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.UpdateMainPageEntryRequest'
+          $ref: '#/definitions/model.UpdateMainPageEntryRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Main page entry updated successfully
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
       security:
       - BearerAuth: []
-      summary: Update main page entry
+      summary: Update main page entry (Admin only)
       tags:
       - main-page
   /api/projects:
@@ -1161,48 +1424,74 @@ paths:
         "200":
           description: Includes 'data' array and 'pagination' object
           schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
+            type: object
+        "400":
+          description: Invalid parameters
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: List projects with pagination
       tags:
       - projects
     post:
       consumes:
       - application/json
-      description: Creates a new project
+      description: Creates a new project. Requires administrator role.
       parameters:
       - description: Project payload
         in: body
         name: project
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.CreateProjectDTO'
+          $ref: '#/definitions/model.CreateProjectDTO'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Project'
+            $ref: '#/definitions/model.Project'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/gin.H'
-      summary: Create project
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create project (Admin only)
       tags:
-      - categories
+      - projects
   /api/projects/{id}:
     delete:
       consumes:
       - application/json
-      description: Deletes a project by ID
+      description: Deletes a project by ID. Requires administrator role.
       parameters:
       - description: Project ID
         in: path
@@ -1213,20 +1502,40 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: successfully deleted
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/gin.H'
-      summary: Delete project
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete project (Admin only)
       tags:
-      - categories
+      - projects
     get:
       consumes:
       - application/json
@@ -1243,22 +1552,34 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Project'
+            $ref: '#/definitions/model.Project'
         "400":
-          description: Bad Request
+          description: Invalid ID format
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "404":
-          description: Not Found
+          description: Project not found
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
       summary: Get project by ID
       tags:
-      - categories
+      - projects
     put:
       consumes:
       - application/json
-      description: Updates an existing project by ID
+      description: Updates an existing project by ID. Requires administrator role.
       parameters:
       - description: Project ID
         in: path
@@ -1270,25 +1591,43 @@ paths:
         name: project
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.CreateProjectDTO'
+          $ref: '#/definitions/model.CreateProjectDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Project'
+            $ref: '#/definitions/model.Project'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/gin.H'
-      summary: Update project
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update project (Admin only)
       tags:
-      - categories
+      - projects
   /api/projects/{id}/similar:
     get:
       consumes:
@@ -1307,16 +1646,28 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ozinse-backend_internal_model.Project'
+              $ref: '#/definitions/model.Project'
             type: array
         "400":
-          description: Bad Request
+          description: Invalid project ID
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
       summary: Get similar projects
       tags:
       - projects
@@ -1332,19 +1683,29 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ozinse-backend_internal_model.Project'
+              $ref: '#/definitions/model.Project'
             type: array
-        "500":
-          description: Internal Server Error
+        "401":
+          description: Unauthorized access
           schema:
-            $ref: '#/definitions/gin.H'
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
       summary: List trending projects
       tags:
       - projects
   /api/roles:
     get:
       description: Returns a full list of roles, each containing its associated module
-        permissions array
+        permissions array. Requires administrator role.
       produces:
       - application/json
       responses:
@@ -1352,8 +1713,20 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ozinse-backend_internal_model.Role'
+              $ref: '#/definitions/model.Role'
             type: array
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal server error
           schema:
@@ -1362,29 +1735,42 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Get all roles
+      summary: Get all roles (Admin only)
       tags:
       - roles
     post:
       consumes:
       - application/json
-      description: Inserts a new role name and maps specified module permissions
+      description: Inserts a new role name and maps specified module permissions.
+        Requires administrator role.
       parameters:
       - description: Role and Permissions Data
         in: body
         name: role
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.Role'
+          $ref: '#/definitions/model.Role'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Role'
+            $ref: '#/definitions/model.Role'
         "400":
           description: Invalid JSON input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
           schema:
             additionalProperties:
               type: string
@@ -1397,13 +1783,13 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Create a new role with permissions
+      summary: Create a new role with permissions (Admin only)
       tags:
       - roles
   /api/roles/{id}:
     delete:
       description: Deletes a role record by ID. Foreign key cascade constraints handle
-        removing associated permissions automatically
+        removing associated permissions automatically. Requires administrator role.
       parameters:
       - description: Role ID
         in: path
@@ -1423,6 +1809,18 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal server error or role not found
           schema:
@@ -1431,12 +1829,12 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Delete a role
+      summary: Delete a role (Admin only)
       tags:
       - roles
     get:
       description: Returns a single role object containing its mapped module permissions
-        array
+        array. Requires administrator role.
       parameters:
       - description: Role ID
         in: path
@@ -1449,9 +1847,21 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Role'
+            $ref: '#/definitions/model.Role'
         "400":
           description: Invalid ID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
           schema:
             additionalProperties:
               type: string
@@ -1464,14 +1874,14 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Get a role by ID
+      summary: Get a role by ID (Admin only)
       tags:
       - roles
     put:
       consumes:
       - application/json
       description: Modifies role details by ID and replaces old permissions with the
-        new payload within a transaction
+        new payload within a transaction. Requires administrator role.
       parameters:
       - description: Role ID
         in: path
@@ -1483,16 +1893,28 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.Role'
+          $ref: '#/definitions/model.Role'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.Role'
+            $ref: '#/definitions/model.Role'
         "400":
           description: Invalid ID or JSON input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
           schema:
             additionalProperties:
               type: string
@@ -1505,7 +1927,7 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Update an existing role
+      summary: Update an existing role (Admin only)
       tags:
       - roles
   /api/users:
@@ -1519,8 +1941,20 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ozinse-backend_internal_model.User'
+              $ref: '#/definitions/model.User'
             type: array
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal server error
           schema:
@@ -1555,6 +1989,18 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal server error
           schema:
@@ -1581,9 +2027,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.User'
+            $ref: '#/definitions/model.User'
         "400":
           description: Invalid user ID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
           schema:
             additionalProperties:
               type: string
@@ -1620,16 +2072,22 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.User'
+          $ref: '#/definitions/model.User'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ozinse-backend_internal_model.User'
+            $ref: '#/definitions/model.User'
         "400":
           description: Invalid payload or ID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized access
           schema:
             additionalProperties:
               type: string
@@ -1657,7 +2115,7 @@ paths:
         name: favorite
         required: true
         schema:
-          $ref: '#/definitions/ozinse-backend_internal_model.FavoriteRequest'
+          $ref: '#/definitions/model.FavoriteRequest'
       produces:
       - application/json
       responses:

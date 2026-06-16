@@ -1,0 +1,35 @@
+{"time":"2026-06-15T23:38:42.3872328+05:00","level":"INFO","msg":"Structured logger initialized successfully"}
+{"time":"2026-06-15T23:38:42.5232386+05:00","level":"INFO","msg":"Successfully connected to PostgreSQL on port 5433"}
+{"time":"2026-06-15T23:38:42.5279717+05:00","level":"INFO","msg":"Starting server on http://localhost:8080"}
+{"time":"2026-06-15T23:45:07.156784+05:00","level":"INFO","msg":"Structured logger initialized successfully"}
+{"time":"2026-06-15T23:45:07.2323277+05:00","level":"INFO","msg":"Successfully connected to PostgreSQL on port 5433"}
+{"time":"2026-06-15T23:45:07.2359691+05:00","level":"INFO","msg":"Starting server on http://localhost:8080"}
+{"time":"2026-06-15T23:45:24.7195742+05:00","level":"INFO","msg":"successfully retrieved all genres","requestType":"GET","endpoint":"/api/genres","count":6}
+{"time":"2026-06-15T23:46:30.1209247+05:00","level":"WARN","msg":"requested genre record not found in persistence layer","requestType":"GET","endpoint":"/api/genres/777","genre_id":777}
+{"time":"2026-06-15T23:59:55.2948501+05:00","level":"INFO","msg":"Structured logger initialized successfully"}
+{"time":"2026-06-15T23:59:55.372114+05:00","level":"INFO","msg":"Successfully connected to PostgreSQL on port 5433"}
+{"time":"2026-06-15T23:59:55.377915+05:00","level":"INFO","msg":"Starting server on http://localhost:8080"}
+{"time":"2026-06-16T00:00:33.1319925+05:00","level":"INFO","msg":"user successfully authenticated and issued session token","requestType":"POST","endpoint":"/api/auth/login","user_id":3,"role_id":2}
+{"time":"2026-06-16T00:00:43.0434794+05:00","level":"INFO","msg":"successfully fetched all registered user accounts","requestType":"GET","endpoint":"/api/users","count":5}
+{"time":"2026-06-16T00:01:38.1138458+05:00","level":"WARN","msg":"requested user account identity record missing from persistence layer","requestType":"GET","endpoint":"/api/users/100","user_id":100}
+{"time":"2026-06-16T14:53:41.8823577+05:00","level":"INFO","msg":"Structured logger initialized successfully"}
+{"time":"2026-06-16T14:53:42.0177351+05:00","level":"INFO","msg":"Successfully connected to PostgreSQL on port 5433"}
+{"time":"2026-06-16T14:53:42.0242052+05:00","level":"INFO","msg":"Starting server on http://localhost:8080"}
+{"time":"2026-06-16T14:55:11.7929124+05:00","level":"INFO","msg":"user successfully authenticated and issued session token","requestType":"POST","endpoint":"/api/auth/login","user_id":3,"role_id":2}
+{"time":"2026-06-16T14:56:12.0183574+05:00","level":"INFO","msg":"successfully fetched all registered user accounts","requestType":"GET","endpoint":"/api/users","count":5}
+{"time":"2026-06-16T14:59:32.6482016+05:00","level":"INFO","msg":"successfully fetched all categories","requestType":"GET","endpoint":"/api/categories","count":5}
+{"time":"2026-06-16T15:00:19.5422752+05:00","level":"INFO","msg":"successfully compiled query results chunk dataset matched rows","requestType":"GET","endpoint":"/api/projects","queryPage":"1","queryLimit":"15","querySearch":"","totalCount":6,"totalPages":1}
+{"time":"2026-06-16T15:21:28.5721347+05:00","level":"INFO","msg":"Structured logger initialized successfully"}
+{"time":"2026-06-16T15:21:28.6647957+05:00","level":"INFO","msg":"Successfully connected to PostgreSQL on port 5433"}
+{"time":"2026-06-16T15:21:28.6703006+05:00","level":"INFO","msg":"Starting server on http://localhost:8080"}
+{"time":"2026-06-16T15:21:35.6583947+05:00","level":"INFO","msg":"user successfully authenticated and issued session token","requestType":"POST","endpoint":"/api/auth/login","user_id":3,"role_id":2}
+{"time":"2026-06-16T15:21:50.3270693+05:00","level":"INFO","msg":"successfully processed telemetry asset metrics calculations sets rows","requestType":"GET","endpoint":"/api/categories/movie-count","count":5}
+{"time":"2026-06-16T15:58:49.1909404+05:00","level":"INFO","msg":"Structured logger initialized successfully"}
+{"time":"2026-06-16T15:58:49.3203397+05:00","level":"INFO","msg":"Successfully connected to PostgreSQL on port 5433"}
+{"time":"2026-06-16T15:58:49.3247855+05:00","level":"INFO","msg":"Starting server on http://localhost:8080"}
+{"time":"2026-06-16T16:02:14.9670029+05:00","level":"INFO","msg":"user successfully authenticated and issued session token","requestType":"POST","endpoint":"/api/auth/login","user_id":4,"role_id":1}
+{"time":"2026-06-16T16:13:02.6090232+05:00","level":"INFO","msg":"Structured logger initialized successfully"}
+{"time":"2026-06-16T16:13:02.6852926+05:00","level":"INFO","msg":"Successfully connected to PostgreSQL on port 5433"}
+{"time":"2026-06-16T16:13:02.6916015+05:00","level":"INFO","msg":"Starting server on http://localhost:8080"}
+{"time":"2026-06-16T16:13:19.7905824+05:00","level":"INFO","msg":"user successfully authenticated and issued session token","requestType":"POST","endpoint":"/api/auth/login","user_id":4,"role_id":1}
+{"time":"2026-06-16T16:13:30.9101393+05:00","level":"WARN","msg":"unauthorized administrative access attempt blocked successfully","requestType":"GET","endpoint":"/api/users","user_id":4,"role_id":1,"ip_address":"::1"}

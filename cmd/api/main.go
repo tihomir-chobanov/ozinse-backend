@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"ozinse-backend/internal/handler"
+	"ozinse-backend/internal/logger"
 	"ozinse-backend/internal/middleware"
 	"ozinse-backend/internal/repository"
 	"ozinse-backend/internal/service"
@@ -11,7 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
-	_ "ozinse-backend/cmd/api/docs" 
+	_ "ozinse-backend/cmd/api/docs"
+
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -30,6 +32,14 @@ func main() {
 	if err != nil {
 		log.Println("No .env file found, using system environment variables")
 	}
+
+	// 1.1 Initialize the structured JSON logging package
+	if err := logger.InitLogger(); err != nil {
+		log.Fatalf("Failed to initialize structured logger: %v", err)
+	}
+
+	// From this point onward, we use the structured logger instead of standard log.Println
+	logger.Log.Info("Structured logger initialized successfully")
 
 	// 2. Initialize a database connection
 	db, err := repository.ConnectDB()
@@ -140,6 +150,7 @@ func main() {
 			adminOnly.Use(middleware.AdminOnly())
 			{
 				// only users with role_id = 2 (admin) can access these routes
+				adminOnly.GET("/categories/movie-count", categoryHandler.GetMovieCount)
 				adminOnly.POST("/categories", categoryHandler.Create)
 				adminOnly.PUT("/categories/:id", categoryHandler.Update)
 				adminOnly.DELETE("/categories/:id", categoryHandler.Delete)
@@ -164,13 +175,12 @@ func main() {
 
 				adminOnly.GET("/users", userHandler.GetAll)
 				adminOnly.DELETE("/users/:id", userHandler.Delete)
-				
+
 				adminOnly.POST("/main-page-entries", projectHandler.CreateMainPageEntry)
 				adminOnly.GET("/main-page-entries", projectHandler.GetMainPageEntries)
 				adminOnly.DELETE("/main-page-entries/:id", projectHandler.DeleteMainPageEntry)
 				adminOnly.PUT("/main-page-entries/:id", projectHandler.UpdateMainPageEntry)
 				adminOnly.GET("/main-page-entries/:id", projectHandler.GetByIDForMainPage)
-				
 
 			}
 		}

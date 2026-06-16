@@ -34,7 +34,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ozinse-backend_internal_model.Age_Category"
+                                "$ref": "#/definitions/model.Age_Category"
                             }
                         }
                     },
@@ -55,7 +55,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Creates a new age_category",
+                "description": "Creates a new age_category. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -65,7 +65,7 @@ const docTemplate = `{
                 "tags": [
                     "age_categories"
                 ],
-                "summary": "Create age_category",
+                "summary": "Create age_category (Admin only)",
                 "parameters": [
                     {
                         "description": "Age_Category payload",
@@ -73,7 +73,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Age_Category"
+                            "$ref": "#/definitions/model.Age_Category"
                         }
                     }
                 ],
@@ -81,11 +81,29 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Age_Category"
+                            "$ref": "#/definitions/model.Age_Category"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -131,7 +149,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Age_Category"
+                            "$ref": "#/definitions/model.Age_Category"
                         }
                     },
                     "400": {
@@ -160,7 +178,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Updates an existing age_category by ID",
+                "description": "Updates an existing age_category by ID. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -170,7 +188,7 @@ const docTemplate = `{
                 "tags": [
                     "age_categories"
                 ],
-                "summary": "Update age_category",
+                "summary": "Update age_category (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -185,7 +203,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Age_Category"
+                            "$ref": "#/definitions/model.Age_Category"
                         }
                     }
                 ],
@@ -193,11 +211,29 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Age_Category"
+                            "$ref": "#/definitions/model.Age_Category"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -222,7 +258,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Deletes an age_category by ID",
+                "description": "Deletes an age_category by ID. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -232,7 +268,7 @@ const docTemplate = `{
                 "tags": [
                     "age_categories"
                 ],
-                "summary": "Delete age_category",
+                "summary": "Delete age_category (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -254,6 +290,24 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -293,7 +347,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.ForgotPasswordRequest"
+                            "$ref": "#/definitions/model.ForgotPasswordRequest"
                         }
                     }
                 ],
@@ -301,19 +355,28 @@ const docTemplate = `{
                     "200": {
                         "description": "Token generated successfully",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
                         "description": "Invalid email format",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "User not found or DB error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -339,7 +402,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.LoginRequest"
+                            "$ref": "#/definitions/model.LoginRequest"
                         }
                     }
                 ],
@@ -347,25 +410,37 @@ const docTemplate = `{
                     "200": {
                         "description": "Returns JWT token",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
                         "description": "Invalid input format",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "401": {
                         "description": "Invalid email or password",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Failed to generate access token",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -391,7 +466,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.RegisterRequest"
+                            "$ref": "#/definitions/model.RegisterRequest"
                         }
                     }
                 ],
@@ -399,19 +474,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.User"
+                            "$ref": "#/definitions/model.User"
                         }
                     },
                     "400": {
                         "description": "Invalid JSON or short password",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal server error or email already exists",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -437,7 +518,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.ResetPasswordRequest"
+                            "$ref": "#/definitions/model.ResetPasswordRequest"
                         }
                     }
                 ],
@@ -445,19 +526,28 @@ const docTemplate = `{
                     "200": {
                         "description": "Password updated successfully",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
                         "description": "Invalid JSON input",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Invalid/expired token or server error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -482,7 +572,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ozinse-backend_internal_model.Category"
+                                "$ref": "#/definitions/model.Category"
                             }
                         }
                     },
@@ -503,7 +593,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Creates a new category",
+                "description": "Creates a new category. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -513,7 +603,7 @@ const docTemplate = `{
                 "tags": [
                     "categories"
                 ],
-                "summary": "Create category",
+                "summary": "Create category (Admin only)",
                 "parameters": [
                     {
                         "description": "Category payload",
@@ -521,7 +611,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Category"
+                            "$ref": "#/definitions/model.Category"
                         }
                     }
                 ],
@@ -529,11 +619,84 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Category"
+                            "$ref": "#/definitions/model.Category"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/categories/movie-count": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns a list of categories along with the total count of associated projects. Requires administrator role.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Get movie count per category (Admin only)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.CategoryMovieCount"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -579,7 +742,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Category"
+                            "$ref": "#/definitions/model.Category"
                         }
                     },
                     "400": {
@@ -608,7 +771,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Updates an existing category by ID",
+                "description": "Updates an existing category by ID. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -618,7 +781,7 @@ const docTemplate = `{
                 "tags": [
                     "categories"
                 ],
-                "summary": "Update category",
+                "summary": "Update category (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -633,7 +796,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Category"
+                            "$ref": "#/definitions/model.Category"
                         }
                     }
                 ],
@@ -641,11 +804,29 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Category"
+                            "$ref": "#/definitions/model.Category"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -670,7 +851,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Deletes a category by ID",
+                "description": "Deletes a category by ID. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -680,7 +861,7 @@ const docTemplate = `{
                 "tags": [
                     "categories"
                 ],
-                "summary": "Delete category",
+                "summary": "Delete category (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -702,6 +883,24 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -740,7 +939,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ozinse-backend_internal_model.Genre"
+                                "$ref": "#/definitions/model.Genre"
                             }
                         }
                     },
@@ -761,7 +960,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Creates a new genre",
+                "description": "Creates a new genre. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -771,7 +970,7 @@ const docTemplate = `{
                 "tags": [
                     "genres"
                 ],
-                "summary": "Create genre",
+                "summary": "Create genre (Admin only)",
                 "parameters": [
                     {
                         "description": "Genre payload",
@@ -779,7 +978,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Genre"
+                            "$ref": "#/definitions/model.Genre"
                         }
                     }
                 ],
@@ -787,11 +986,29 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Genre"
+                            "$ref": "#/definitions/model.Genre"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -837,7 +1054,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Genre"
+                            "$ref": "#/definitions/model.Genre"
                         }
                     },
                     "400": {
@@ -866,7 +1083,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Updates an existing genre by ID",
+                "description": "Updates an existing genre by ID. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -876,7 +1093,7 @@ const docTemplate = `{
                 "tags": [
                     "genres"
                 ],
-                "summary": "Update genre",
+                "summary": "Update genre (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -891,7 +1108,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Genre"
+                            "$ref": "#/definitions/model.Genre"
                         }
                     }
                 ],
@@ -899,11 +1116,29 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Genre"
+                            "$ref": "#/definitions/model.Genre"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -928,7 +1163,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Deletes a genre by ID",
+                "description": "Deletes a genre by ID. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -938,7 +1173,7 @@ const docTemplate = `{
                 "tags": [
                     "genres"
                 ],
-                "summary": "Delete genre",
+                "summary": "Delete genre (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -967,6 +1202,24 @@ const docTemplate = `{
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
                         "schema": {
@@ -986,7 +1239,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Returns all projects assigned to the featured main page layout",
+                "description": "Returns all projects assigned to the featured main page layout. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -996,21 +1249,42 @@ const docTemplate = `{
                 "tags": [
                     "main-page"
                 ],
-                "summary": "List main page entries",
+                "summary": "List main page entries (Admin only)",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ozinse-backend_internal_model.MainPageProject"
+                                "$ref": "#/definitions/model.MainPageProject"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -1021,7 +1295,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Shortcuts a project onto the featured landing main page area",
+                "description": "Shortcuts a project onto the featured landing main page area. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1031,7 +1305,7 @@ const docTemplate = `{
                 "tags": [
                     "main-page"
                 ],
-                "summary": "Add project to main page",
+                "summary": "Add project to main page (Admin only)",
                 "parameters": [
                     {
                         "description": "Main page entry payload",
@@ -1039,27 +1313,54 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.CreateMainPageEntryRequest"
+                            "$ref": "#/definitions/model.CreateMainPageEntryRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Main page entry created successfully",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -1072,7 +1373,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Returns details of a main page featured layout configuration by its database ID",
+                "description": "Returns details of a main page featured layout configuration by its database ID. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1082,7 +1383,7 @@ const docTemplate = `{
                 "tags": [
                     "main-page"
                 ],
-                "summary": "Get main page entry by ID",
+                "summary": "Get main page entry by ID (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1096,25 +1397,52 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.MainPageProject"
+                            "$ref": "#/definitions/model.MainPageProject"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -1125,7 +1453,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Modifies position or meta layout details of an entry on the main page by its ID",
+                "description": "Modifies position or meta layout details of an entry on the main page by its ID. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1135,7 +1463,7 @@ const docTemplate = `{
                 "tags": [
                     "main-page"
                 ],
-                "summary": "Update main page entry",
+                "summary": "Update main page entry (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1150,27 +1478,54 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.UpdateMainPageEntryRequest"
+                            "$ref": "#/definitions/model.UpdateMainPageEntryRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Main page entry updated successfully",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -1181,7 +1536,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Removes a featured shortcut entry from the main page by its config ID",
+                "description": "Removes a featured shortcut entry from the main page by its config ID. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1191,7 +1546,7 @@ const docTemplate = `{
                 "tags": [
                     "main-page"
                 ],
-                "summary": "Delete main page entry",
+                "summary": "Delete main page entry (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1203,21 +1558,48 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Main page entry deleted successfully",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -1260,19 +1642,36 @@ const docTemplate = `{
                     "200": {
                         "description": "Includes 'data' array and 'pagination' object",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
             },
             "post": {
-                "description": "Creates a new project",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Creates a new project. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1280,9 +1679,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "categories"
+                    "projects"
                 ],
-                "summary": "Create project",
+                "summary": "Create project (Admin only)",
                 "parameters": [
                     {
                         "description": "Project payload",
@@ -1290,7 +1689,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.CreateProjectDTO"
+                            "$ref": "#/definitions/model.CreateProjectDTO"
                         }
                     }
                 ],
@@ -1298,19 +1697,43 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Project"
+                            "$ref": "#/definitions/model.Project"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -1318,6 +1741,11 @@ const docTemplate = `{
         },
         "/api/projects/trending": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns a list of high-traffic or featured trending projects",
                 "consumes": [
                     "application/json"
@@ -1335,14 +1763,26 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ozinse-backend_internal_model.Project"
+                                "$ref": "#/definitions/model.Project"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -1350,6 +1790,11 @@ const docTemplate = `{
         },
         "/api/projects/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns a project by its ID",
                 "consumes": [
                     "application/json"
@@ -1358,7 +1803,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "categories"
+                    "projects"
                 ],
                 "summary": "Get project by ID",
                 "parameters": [
@@ -1374,25 +1819,45 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Project"
+                            "$ref": "#/definitions/model.Project"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid ID format",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "404": {
-                        "description": "Not Found",
+                        "description": "Project not found",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
             },
             "put": {
-                "description": "Updates an existing project by ID",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates an existing project by ID. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1400,9 +1865,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "categories"
+                    "projects"
                 ],
-                "summary": "Update project",
+                "summary": "Update project (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1417,7 +1882,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.CreateProjectDTO"
+                            "$ref": "#/definitions/model.CreateProjectDTO"
                         }
                     }
                 ],
@@ -1425,25 +1890,54 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Project"
+                            "$ref": "#/definitions/model.Project"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
             },
             "delete": {
-                "description": "Deletes a project by ID",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Deletes a project by ID. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1451,9 +1945,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "categories"
+                    "projects"
                 ],
-                "summary": "Delete project",
+                "summary": "Delete project (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1465,21 +1959,48 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "successfully deleted",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -1487,6 +2008,11 @@ const docTemplate = `{
         },
         "/api/projects/{id}/similar": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns projects that are related to the given project ID",
                 "consumes": [
                     "application/json"
@@ -1513,20 +2039,35 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ozinse-backend_internal_model.Project"
+                                "$ref": "#/definitions/model.Project"
                             }
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid project ID",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/gin.H"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -1539,21 +2080,39 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Returns a full list of roles, each containing its associated module permissions array",
+                "description": "Returns a full list of roles, each containing its associated module permissions array. Requires administrator role.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "roles"
                 ],
-                "summary": "Get all roles",
+                "summary": "Get all roles (Admin only)",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ozinse-backend_internal_model.Role"
+                                "$ref": "#/definitions/model.Role"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     },
@@ -1574,7 +2133,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Inserts a new role name and maps specified module permissions",
+                "description": "Inserts a new role name and maps specified module permissions. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1584,7 +2143,7 @@ const docTemplate = `{
                 "tags": [
                     "roles"
                 ],
-                "summary": "Create a new role with permissions",
+                "summary": "Create a new role with permissions (Admin only)",
                 "parameters": [
                     {
                         "description": "Role and Permissions Data",
@@ -1592,7 +2151,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Role"
+                            "$ref": "#/definitions/model.Role"
                         }
                     }
                 ],
@@ -1600,11 +2159,29 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Role"
+                            "$ref": "#/definitions/model.Role"
                         }
                     },
                     "400": {
                         "description": "Invalid JSON input",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1631,14 +2208,14 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Returns a single role object containing its mapped module permissions array",
+                "description": "Returns a single role object containing its mapped module permissions array. Requires administrator role.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "roles"
                 ],
-                "summary": "Get a role by ID",
+                "summary": "Get a role by ID (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1652,11 +2229,29 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Role"
+                            "$ref": "#/definitions/model.Role"
                         }
                     },
                     "400": {
                         "description": "Invalid ID format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1681,7 +2276,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Modifies role details by ID and replaces old permissions with the new payload within a transaction",
+                "description": "Modifies role details by ID and replaces old permissions with the new payload within a transaction. Requires administrator role.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1691,7 +2286,7 @@ const docTemplate = `{
                 "tags": [
                     "roles"
                 ],
-                "summary": "Update an existing role",
+                "summary": "Update an existing role (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1706,7 +2301,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Role"
+                            "$ref": "#/definitions/model.Role"
                         }
                     }
                 ],
@@ -1714,11 +2309,29 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Role"
+                            "$ref": "#/definitions/model.Role"
                         }
                     },
                     "400": {
                         "description": "Invalid ID or JSON input",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1743,11 +2356,11 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Deletes a role record by ID. Foreign key cascade constraints handle removing associated permissions automatically",
+                "description": "Deletes a role record by ID. Foreign key cascade constraints handle removing associated permissions automatically. Requires administrator role.",
                 "tags": [
                     "roles"
                 ],
-                "summary": "Delete a role",
+                "summary": "Delete a role (Admin only)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1769,6 +2382,24 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Invalid ID format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1809,7 +2440,25 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ozinse-backend_internal_model.User"
+                                "$ref": "#/definitions/model.User"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     },
@@ -1850,7 +2499,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.FavoriteRequest"
+                            "$ref": "#/definitions/model.FavoriteRequest"
                         }
                     }
                 ],
@@ -1989,11 +2638,20 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.User"
+                            "$ref": "#/definitions/model.User"
                         }
                     },
                     "400": {
                         "description": "Invalid user ID format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -2052,7 +2710,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.User"
+                            "$ref": "#/definitions/model.User"
                         }
                     }
                 ],
@@ -2060,11 +2718,20 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.User"
+                            "$ref": "#/definitions/model.User"
                         }
                     },
                     "400": {
                         "description": "Invalid payload or ID format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -2122,6 +2789,24 @@ const docTemplate = `{
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin only",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
@@ -2136,11 +2821,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "gin.H": {
-            "type": "object",
-            "additionalProperties": {}
-        },
-        "ozinse-backend_internal_model.Age_Category": {
+        "model.Age_Category": {
             "type": "object",
             "properties": {
                 "icon_url": {
@@ -2157,7 +2838,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.Category": {
+        "model.Category": {
             "type": "object",
             "properties": {
                 "id": {
@@ -2170,7 +2851,21 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.CreateMainPageEntryRequest": {
+        "model.CategoryMovieCount": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "category_name": {
+                    "type": "string"
+                },
+                "total_movies": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.CreateMainPageEntryRequest": {
             "type": "object",
             "required": [
                 "icon_url",
@@ -2190,13 +2885,13 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.CreateProjectDTO": {
+        "model.CreateProjectDTO": {
             "type": "object",
             "properties": {
                 "age_categories": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.Age_Category"
+                        "$ref": "#/definitions/model.Age_Category"
                     }
                 },
                 "age_category_ids": {
@@ -2208,7 +2903,7 @@ const docTemplate = `{
                 "categories": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.Category"
+                        "$ref": "#/definitions/model.Category"
                     }
                 },
                 "category_ids": {
@@ -2240,7 +2935,7 @@ const docTemplate = `{
                 "episodes": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.Episode"
+                        "$ref": "#/definitions/model.Episode"
                     }
                 },
                 "genre_ids": {
@@ -2252,7 +2947,7 @@ const docTemplate = `{
                 "genres": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.Genre"
+                        "$ref": "#/definitions/model.Genre"
                     }
                 },
                 "id": {
@@ -2278,13 +2973,13 @@ const docTemplate = `{
                 "screenshots": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.ProjectScreenshot"
+                        "$ref": "#/definitions/model.ProjectScreenshot"
                     }
                 },
                 "seasons": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.Season"
+                        "$ref": "#/definitions/model.Season"
                     }
                 },
                 "title": {
@@ -2297,7 +2992,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.Episode": {
+        "model.Episode": {
             "type": "object",
             "properties": {
                 "duration": {
@@ -2322,7 +3017,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.FavoriteRequest": {
+        "model.FavoriteRequest": {
             "type": "object",
             "required": [
                 "project_id"
@@ -2333,7 +3028,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.ForgotPasswordRequest": {
+        "model.ForgotPasswordRequest": {
             "type": "object",
             "required": [
                 "email"
@@ -2344,7 +3039,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.Genre": {
+        "model.Genre": {
             "type": "object",
             "properties": {
                 "icon_url": {
@@ -2361,7 +3056,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.LoginRequest": {
+        "model.LoginRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -2376,7 +3071,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.MainPageProject": {
+        "model.MainPageProject": {
             "type": "object",
             "properties": {
                 "icon_url": {
@@ -2392,13 +3087,13 @@ const docTemplate = `{
                     "description": "Вграждаме целия съществуващ модел Project",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/ozinse-backend_internal_model.Project"
+                            "$ref": "#/definitions/model.Project"
                         }
                     ]
                 }
             }
         },
-        "ozinse-backend_internal_model.Permission": {
+        "model.Permission": {
             "type": "object",
             "properties": {
                 "access_level": {
@@ -2415,19 +3110,19 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.Project": {
+        "model.Project": {
             "type": "object",
             "properties": {
                 "age_categories": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.Age_Category"
+                        "$ref": "#/definitions/model.Age_Category"
                     }
                 },
                 "categories": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.Category"
+                        "$ref": "#/definitions/model.Category"
                     }
                 },
                 "cover_image_url": {
@@ -2453,13 +3148,13 @@ const docTemplate = `{
                 "episodes": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.Episode"
+                        "$ref": "#/definitions/model.Episode"
                     }
                 },
                 "genres": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.Genre"
+                        "$ref": "#/definitions/model.Genre"
                     }
                 },
                 "id": {
@@ -2485,13 +3180,13 @@ const docTemplate = `{
                 "screenshots": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.ProjectScreenshot"
+                        "$ref": "#/definitions/model.ProjectScreenshot"
                     }
                 },
                 "seasons": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.Season"
+                        "$ref": "#/definitions/model.Season"
                     }
                 },
                 "title": {
@@ -2504,7 +3199,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.ProjectScreenshot": {
+        "model.ProjectScreenshot": {
             "type": "object",
             "properties": {
                 "id": {
@@ -2521,7 +3216,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.RegisterRequest": {
+        "model.RegisterRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -2537,7 +3232,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.ResetPasswordRequest": {
+        "model.ResetPasswordRequest": {
             "type": "object",
             "required": [
                 "new_password",
@@ -2553,7 +3248,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.Role": {
+        "model.Role": {
             "type": "object",
             "properties": {
                 "id": {
@@ -2565,18 +3260,18 @@ const docTemplate = `{
                 "permissions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.Permission"
+                        "$ref": "#/definitions/model.Permission"
                     }
                 }
             }
         },
-        "ozinse-backend_internal_model.Season": {
+        "model.Season": {
             "type": "object",
             "properties": {
                 "episodes": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ozinse-backend_internal_model.Episode"
+                        "$ref": "#/definitions/model.Episode"
                     }
                 },
                 "id": {
@@ -2593,7 +3288,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.UpdateMainPageEntryRequest": {
+        "model.UpdateMainPageEntryRequest": {
             "type": "object",
             "required": [
                 "icon_url",
@@ -2609,7 +3304,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ozinse-backend_internal_model.User": {
+        "model.User": {
             "type": "object",
             "properties": {
                 "birth_date": {

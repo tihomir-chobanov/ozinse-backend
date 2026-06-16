@@ -47,3 +47,8 @@ func (s *CategoryService) Update(c *model.Category) error {
 func (s *CategoryService) Delete(id int) error {
 	return s.repo.Delete(id)
 }
+
+// GetMovieCountPerCategory fetches the calculated statistics for category distribution
+func (s *CategoryService) GetMovieCountPerCategory() ([]model.CategoryMovieCount, error) {
+	return s.repo.GetMovieCountPerCategory()
+}

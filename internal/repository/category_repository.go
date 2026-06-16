@@ -107,3 +107,37 @@ func (r *CategoryRepository) ExistsByName(name string) (bool, error) {
 	}
 	return exists, nil
 }
+
+// GetMovieCountPerCategory executes an aggregated query to fetch the total number of projects in each category
+func (r *CategoryRepository) GetMovieCountPerCategory() ([]model.CategoryMovieCount, error) {
+	query := `
+		SELECT 
+			c.id AS category_id,
+			c.name AS category_name,
+			COUNT(pc.project_id) AS total_movies
+		FROM 
+			category c
+		LEFT JOIN 
+			project_category pc ON c.id = pc.category_id
+		GROUP BY 
+			c.id, c.name
+		ORDER BY 
+			total_movies DESC;`
+
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var results []model.CategoryMovieCount
+	for rows.Next() {
+		var item model.CategoryMovieCount
+		if err := rows.Scan(&item.CategoryID, &item.CategoryName, &item.TotalMovies); err != nil {
+			return nil, err
+		}
+		results = append(results, item)
+	}
+
+	return results, nil
+}
