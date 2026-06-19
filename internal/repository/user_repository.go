@@ -198,3 +198,10 @@ func (r *UserRepository) Delete(id int) error {
 
 	return nil
 }
+
+func (r *UserRepository) CountUsers() (int, error) {
+	query := `select count(*) from users where role_id = 1;`
+	var count int
+	err := r.db.QueryRow(query).Scan(&count)
+	return count, err
+}

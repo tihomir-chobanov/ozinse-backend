@@ -185,3 +185,28 @@ func (h *UserHandler) Delete(c *gin.Context) {
 	log.Info("user profile permanent destruction and erasure sequence successfully confirmed", "deleted_user_id", id)
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }
+
+// CountUsers returns the total number of users in the system
+// @Summary Count total users (Admin only)
+// @Description Returns the total number of registered users. Requires administrator role.
+// @Tags users
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {object} map[string]int "Total user count"
+// @Failure 401 {object} map[string]string "Unauthorized access"
+// @Failure 403 {object} map[string]string "Forbidden - Admin only"
+// @Failure 500 {object} map[string]string "Internal server error"
+// @Router /api/users-count [get]
+func (h *UserHandler) CountUsers(c *gin.Context) {
+	log := logger.Log.With(
+		"requestType", "GET",
+		"endpoint", "/api/users/count",
+	)
+	count, err := h.service.CountUsers()
+	if err != nil {
+		log.Error("failed to count users", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"count": count})
+}

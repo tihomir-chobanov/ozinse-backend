@@ -172,6 +172,7 @@ func main() {
 
 				adminOnly.GET("/users", userHandler.GetAll)
 				adminOnly.DELETE("/users/:id", userHandler.Delete)
+				adminOnly.GET("/users-count", userHandler.CountUsers)
 
 				adminOnly.POST("/main-page-entries", projectHandler.CreateMainPageEntry)
 				adminOnly.GET("/main-page-entries", projectHandler.GetMainPageEntries)

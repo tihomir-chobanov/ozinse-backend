@@ -40,3 +40,7 @@ func (s *UserService) Update(user *model.User) error {
 func (s *UserService) Delete(id int) error {
 	return s.repo.Delete(id)
 }
+
+func (s *UserService) CountUsers() (int, error) {
+	return s.repo.CountUsers()
+}
