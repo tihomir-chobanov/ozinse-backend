@@ -21,7 +21,7 @@ import (
 // @title Ozinse API
 // @version 1.0
 // @description API Server for Ozinse Video Platform Backend
-// @host localhost:8080
+// @host ozinse-backend.onrender.com
 // @BasePath /
 // @securityDefinitions.apikey BearerAuth
 // @in header
