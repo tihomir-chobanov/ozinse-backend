@@ -1966,6 +1966,42 @@ paths:
       summary: List all users (Admin only)
       tags:
       - users
+  /api/users-count:
+    get:
+      description: Returns the total number of registered users. Requires administrator
+        role.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Total user count
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden - Admin only
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Count total users (Admin only)
+      tags:
+      - users
   /api/users/{id}:
     delete:
       description: Completely purges a user record by ID from the database. Requires
