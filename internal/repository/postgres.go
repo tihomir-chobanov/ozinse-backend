@@ -10,10 +10,9 @@ import (
 
 func ConnectDB() (*sql.DB, error) {
 
-	err := godotenv.Load()
-	if err != nil {
-		return nil, fmt.Errorf("Error loading .env file: %v", err)
-	}
+	// We completely ignore the error if .env doesn't exist
+    // because Docker and cloud platforms pass environment variables directly.
+    _ = godotenv.Load()
 
 	user := os.Getenv("DB_USER")
 	pass := os.Getenv("DB_PASSWORD")

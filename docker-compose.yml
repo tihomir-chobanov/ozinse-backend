@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: ozinse-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: ozinse
+    ports:
+      - "5433:5432" 
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api_server:
+    build: .
+    container_name: ozinse-api-container
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=1234
+      - DB_HOST=postgres_db 
+      - DB_PORT=5432        
+      - DB_NAME=ozinse
+      - JWT_SECRET='uK8$mN2!vP9_xZ5*qR1-wB6@tY3#fG7'
+    depends_on:
+      - postgres_db
+
+volumes:
+  postgres_data:

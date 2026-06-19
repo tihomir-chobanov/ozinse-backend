@@ -33,3 +33,6 @@
 {"time":"2026-06-16T16:13:02.6916015+05:00","level":"INFO","msg":"Starting server on http://localhost:8080"}
 {"time":"2026-06-16T16:13:19.7905824+05:00","level":"INFO","msg":"user successfully authenticated and issued session token","requestType":"POST","endpoint":"/api/auth/login","user_id":4,"role_id":1}
 {"time":"2026-06-16T16:13:30.9101393+05:00","level":"WARN","msg":"unauthorized administrative access attempt blocked successfully","requestType":"GET","endpoint":"/api/users","user_id":4,"role_id":1,"ip_address":"::1"}
+{"time":"2026-06-16T19:26:45.0483129+05:00","level":"INFO","msg":"Structured logger initialized successfully"}
+{"time":"2026-06-16T19:26:45.2773302+05:00","level":"INFO","msg":"Successfully connected to PostgreSQL on port 5433"}
+{"time":"2026-06-16T19:26:45.2822255+05:00","level":"INFO","msg":"Starting server on http://localhost:8080"}

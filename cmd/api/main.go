@@ -27,11 +27,8 @@ import (
 // @in header
 // @name Authorization
 func main() {
-	// 1. Load environment variables
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("No .env file found, using system environment variables")
-	}
+	// 1. Load environment variables - just try to load, don't crash if missing
+	_ = godotenv.Load()
 
 	// 1.1 Initialize the structured JSON logging package
 	if err := logger.InitLogger(); err != nil {
